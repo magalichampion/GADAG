@@ -1,0 +1,7 @@
+useDynLib(GADAG)
+import(igraph)
+import(MASS)
+import(Rcpp)
+import(parallel)
+importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")
