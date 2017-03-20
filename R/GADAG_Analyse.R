@@ -4,8 +4,12 @@
 ##' @param G Adjacency graph corresponding to the true DAG (pxp matrix).
 ##' @param X Design matrix with samples (n) in rows and variables (p) in columns.
 ##' @param threshold Thresholding value for the edges.
-##' @param plot.graph If TRUE, generates the figures (in .png) with the actual and estimated graphs.
-##' @param plot.evol If TRUE, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering).
+##' @param PlotControl A list containing parameters to control the prodcued graph outputs:
+##' \itemize{
+##' \item plot.graph If TRUE, generates the figures with the actual and estimated graphs,
+##' \item plot.evol If TRUE, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
+##' \item plot.png If TRUE, saves the figures in .png.
+##' }
 ##' @return A vector containing the scores of precision, recall, number of false positives (FP), false negatives (FN), true positives (TP), true negatives (TN) and mean squared error.
 ##' @author \packageAuthor{GADAG}
 ##' @examples
@@ -24,7 +28,7 @@
 ##'  ########################################################
 ##'  GADAG_analysis <- GADAG_Analyse(GADAG_results, G=toy_data$G, X=toy_data$X)
 
-GADAG_Analyse <- function(Results,G,X,threshold=0.1,plot.graph=FALSE,plot.evol=FALSE){
+GADAG_Analyse <- function(Results,G,X,threshold=0.1,PlotControl=list(plot.graph=FALSE,plot.evol=FALSE,plot.png=FALSE)){
 
   #############################################################
   # INPUTS:
@@ -38,12 +42,33 @@ GADAG_Analyse <- function(Results,G,X,threshold=0.1,plot.graph=FALSE,plot.evol=F
   # threshold: thresholding value for the edges
   # plot.graph: if TRUE, generates the figures with the actual and estimated graphs
   # plot.evol: if TRUE, generates the figures showing the evolution of the algorithm (return.level of the main algo has to be = 1)
+  # plot.png: if TRUE, saves the figures in .png
   # OUTPUTS
   # A vector containing the scores of precision, recall, FP, FN, TP, TN, MSE
   #############################################################
 
   n <- dim(X)[1]
   p <- dim(X)[2]
+
+  if (is.null(PlotControl$plot.graph)){
+    plot.graph <- FALSE
+  } else {
+    plot.graph <- PlotControl$plot.graph
+  }
+  if (is.null(PlotControl$plot.evol)){
+    plot.evol <- FALSE
+  } else {
+    plot.evol <- PlotControl$plot.evol
+  }
+  if (is.null(PlotControl$plot.png)){
+    plot.png <- FALSE
+  } else {
+    plot.png <- PlotControl$plot.png
+  }
+
+  if (plot.png==TRUE && plot.graph==FALSE && plot.evol==FALSE){
+    cat("No graphs are produced and saved. Please turn on plot.graph or plot.evol.")
+  }
 
   P <- chrom(Results$P.best)
   T <- matrix(data=Results$T.best,p,p)
@@ -67,17 +92,23 @@ GADAG_Analyse <- function(Results,G,X,threshold=0.1,plot.graph=FALSE,plot.evol=F
     net1 <- graph.adjacency(G.bin)
     net2 <- graph.adjacency(Gbest.bin)
     lay1 <- layout.kamada.kawai(net1)
-    png("TrueDAG.png")
-    plot(net1,main="True DAG", layout=lay1)
-    dev.off()
-    png("EstimatedDAG.png")
-    plot(net2,main="Estimated DAG", layout=lay1)
-    dev.off()
+    if (plot.png==TRUE){
+      png("TrueDAG.png")
+      plot(net1,main="True DAG", layout=lay1)
+      dev.off()
+      png("EstimatedDAG.png")
+      plot(net2,main="Estimated DAG", layout=lay1)
+      dev.off()
+    } else {
+      par(mfrow=c(1,2))
+      plot(net1,main="True DAG", layout=lay1)
+      plot(net2,main="Estimated DAG", layout=lay1)
+    }
   }
 
   if (plot.evol){
     if (length(Results)<12){
-      cat("You don't have enough results to plot anything. Please turn return.level to 1 in the main algorithm.")
+      cat("You don't have enough results to plot anything. Please turn return.level to 1 in the main algorithm. \n")
     } else {
       Node_highlight <- which(rbind(rowSums(abs(G)>0),colSums(abs(G)>0))==max(rbind(rowSums(abs(G)>0),colSums(abs(G)>0))),arr.ind=TRUE)[,1]
       col <- rep("black", p)
@@ -87,30 +118,65 @@ GADAG_Analyse <- function(Results,G,X,threshold=0.1,plot.graph=FALSE,plot.evol=F
 
       # Fpop, min, mean and quantiles
       ylim=c(min(Results$fmin.evol),max(Results$fp90.evol))
-      plot(Results$f.best.evol, type="l", main="Cost function", xlab="Generation #", ylab="-logLikelihood", lwd=2, col="red",
-         ylim=ylim)
-      polygon(x=c(1:length(Results$fp10.evol),rev(1:length(Results$fp10.evol))), y=c(Results$fp10.evol, rev(Results$fp90.evol)), border=NA,col="lightgrey")
-      lines(Results$fmean.evol)
-      lines(Results$fp10.evol)
-      lines(Results$fp90.evol)
-      legend("topright", legend=c("Current best", "Population"), col=c("red","black"), lwd=c(2,1))
+      if (plot.png==TRUE){
+        png("FitnessEvolution.png")
+        plot(Results$f.best.evol, type="l", main="Cost function", xlab="Generation #", ylab="-logLikelihood", lwd=2, col="red",
+          ylim=ylim)
+        polygon(x=c(1:length(Results$fp10.evol),rev(1:length(Results$fp10.evol))), y=c(Results$fp10.evol, rev(Results$fp90.evol)), border=NA,col="lightgrey")
+        lines(Results$fmean.evol)
+        lines(Results$fp10.evol)
+        lines(Results$fp90.evol)
+        legend("topright", legend=c("Current best", "Population"), col=c("red","black"), lwd=c(2,1))
+        dev.off()
 
-      # Shannon
-      plot(Results$Shannon.evol[,1], type="l", main="Shannon entropy", xlab="Generation #", ylab="Entropy", ylim=c(0, max(Results$Shannon.evol)),
-         col=col[1], lwd=lwd[1])
-      for (i in 2:p) lines(Results$Shannon.evol[,i], col=col[i], lwd=lwd[i])
-      legend("topright",legend=paste0("Node ",Node_highlight),lwd=lwd[Node_highlight], col=col[Node_highlight])
 
-      # Nodes paths - bestever
-      A <- which(Results$P.best.evol==1, arr.ind=TRUE)
-      a <- sort(A[,1], index.return=TRUE)$ix
-      plot(A[a,1], A[a,2], ylim=c(0,p), type="l", main="Best permutation", xlab="Generation #", ylab="Node path", col=col[1], lwd=lwd[1])
-      for (i in 2:p){
-        A <- which(Results$P.best.evol==i, arr.ind=TRUE)
+        # Shannon
+        png("ShannonEvolution.png")
+        plot(Results$Shannon.evol[,1], type="l", main="Shannon entropy", xlab="Generation #", ylab="Entropy", ylim=c(0, max(Results$Shannon.evol)),
+          col=col[1], lwd=lwd[1])
+        for (i in 2:p) lines(Results$Shannon.evol[,i], col=col[i], lwd=lwd[i])
+        legend("topright",legend=paste0("Node ",Node_highlight),lwd=lwd[Node_highlight], col=col[Node_highlight])
+        dev.off()
+
+        # Nodes paths - bestever
+        png("BestNodesEvolution.png")
+        A <- which(Results$P.best.evol==1, arr.ind=TRUE)
         a <- sort(A[,1], index.return=TRUE)$ix
-        lines(A[a,1], A[a,2], col=col[i], lwd=lwd[i])
+        plot(A[a,1], A[a,2], ylim=c(0,p), type="l", main="Best permutation", xlab="Generation #", ylab="Node path", col=col[1], lwd=lwd[1])
+        for (i in 2:p){
+          A <- which(Results$P.best.evol==i, arr.ind=TRUE)
+          a <- sort(A[,1], index.return=TRUE)$ix
+          lines(A[a,1], A[a,2], col=col[i], lwd=lwd[i])
+        }
+        legend("topright", legend=paste0("Node ",Node_highlight), lwd=lwd[Node_highlight], col=col[Node_highlight])
+        dev.off()
+      } else {
+        par(mfrow=c(1,1))
+        plot(Results$f.best.evol, type="l", main="Cost function", xlab="Generation #", ylab="-logLikelihood", lwd=2, col="red",
+             ylim=ylim)
+        polygon(x=c(1:length(Results$fp10.evol),rev(1:length(Results$fp10.evol))), y=c(Results$fp10.evol, rev(Results$fp90.evol)), border=NA,col="lightgrey")
+        lines(Results$fmean.evol)
+        lines(Results$fp10.evol)
+        lines(Results$fp90.evol)
+        legend("topright", legend=c("Current best", "Population"), col=c("red","black"), lwd=c(2,1))
+
+        # Shannon
+        plot(Results$Shannon.evol[,1], type="l", main="Shannon entropy", xlab="Generation #", ylab="Entropy", ylim=c(0, max(Results$Shannon.evol)),
+             col=col[1], lwd=lwd[1])
+        for (i in 2:p) lines(Results$Shannon.evol[,i], col=col[i], lwd=lwd[i])
+        legend("topright",legend=paste0("Node ",Node_highlight),lwd=lwd[Node_highlight], col=col[Node_highlight])
+
+        # Nodes paths - bestever
+        A <- which(Results$P.best.evol==1, arr.ind=TRUE)
+        a <- sort(A[,1], index.return=TRUE)$ix
+        plot(A[a,1], A[a,2], ylim=c(0,p), type="l", main="Best permutation", xlab="Generation #", ylab="Node path", col=col[1], lwd=lwd[1])
+        for (i in 2:p){
+          A <- which(Results$P.best.evol==i, arr.ind=TRUE)
+          a <- sort(A[,1], index.return=TRUE)$ix
+          lines(A[a,1], A[a,2], col=col[i], lwd=lwd[i])
+        }
+        legend("topright", legend=paste0("Node ",Node_highlight), lwd=lwd[Node_highlight], col=col[Node_highlight])
       }
-      legend("topright", legend=paste0("Node ",Node_highlight), lwd=lwd[Node_highlight], col=col[Node_highlight])
     }
   }
   options(scipen=50)
