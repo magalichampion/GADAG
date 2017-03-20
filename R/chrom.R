@@ -6,6 +6,7 @@
 ##' @param c A permutation from [1,p].
 ##' @return The pxp matrix of permutation associated to c.
 ##' @author \packageAuthor{GADAG}
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @examples
 ##'  ########################################################
 ##'  # Loading toy data

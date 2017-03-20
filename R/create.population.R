@@ -8,6 +8,7 @@
 ##' @param pop.size Length (number of permutations) of the population (>0).
 ##' @return A pop.size x p matrix corresponding to the population of permutations.
 ##' @author \packageAuthor{GADAG}
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @examples
 ##'  ########################################################
 ##'  # Creating a population of permutations

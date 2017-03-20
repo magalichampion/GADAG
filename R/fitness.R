@@ -8,7 +8,7 @@
 ##' @param lambda Parameter of penalization (>0).
 ##' @return A numeric value corresponding to the fitness of the potential solution.
 ##' @author \packageAuthor{GADAG}
-##' @seealso \code{\link{chrom}}
+##' @seealso \code{\link{chrom}}, \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @examples
 ##'  ########################################################
 ##'  # Loading toy data

@@ -7,6 +7,7 @@
 ##' @param f.pop Fitness of the population of permutations ($f element from evaluation() list output).
 ##' @return A vector of integers between 1 and p corresponding to the elements of the population that will probably crossover.
 ##' @author \packageAuthor{GADAG}
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @examples
 ##'  ########################################################
 ##'  # Loading toy data

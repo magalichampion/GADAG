@@ -7,6 +7,7 @@
 ##' @param p.mut Mutation probability.
 ##' @return Population of permutations created after mutating permutations of Pop.
 ##' @author \packageAuthor{GADAG}
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @examples
 ##'  ########################################################
 ##'  # Creating a population of permutations

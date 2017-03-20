@@ -11,6 +11,7 @@
 ##' \item{tol.obj.inner}{ tolerance (>0),}
 ##' \item{max.ite.inner}{ maximum number of iterations (>0).}
 ##' }
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @param ncores Number of cores (>1, depending on your computer).
 ##' @return A list with the following elements:
 ##' \itemize{

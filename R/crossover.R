@@ -10,6 +10,7 @@
 ##' \item{Children}{ Population of permutations created after crossovering permutations of Pop.}
 ##' \item{I.cross}{ Vector of integers from [1,p] corresponding to the elements of Pop that have a non-zero probability for crossovering.}
 ##' }
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @author \packageAuthor{GADAG}
 ##' @examples
 ##'  ########################################################
