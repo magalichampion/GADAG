@@ -38,6 +38,7 @@
 ##' \item{fp90.evol}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
 ##' \item{Shannon.evol}{ Evolution of the Shannon entropy of the population across the iterations (if return.level=1).}
 ##' }
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyse}}.
 ##' @author \packageAuthor{GADAG}
 ##' @examples
 ##'  ########################################################
@@ -82,12 +83,46 @@ GADAG_Run <- function(X, lambda, threshold=0.1,
   #############################################################
 
   ############## Initialisation step ###############
-  n.gen <- GADAGcontrol$n.gen
-  tol.Shannon <- GADAGcontrol$tol.Shannon
-  max.eval <- GADAGcontrol$max.eval
-  pop.size <- GAcontrol$pop.size
-  p.xo <- GAcontrol$p.xo
-  p.mut <- GAcontrol$p.mut
+  if (is.null(GADAGcontrol$n.gen)){
+    n.gen <- 100
+  } else {
+    n.gen <- GADAGcontrol$n.gen
+  }
+  if (is.null(GADAGcontrol$max.eval)){
+    max.eval <- 1e4
+  } else {
+    max.eval <- GADAGcontrol$max.eval
+  }
+  if (is.null(GADAGcontrol$tol.Shannon)){
+    tol.Shannon <- 1e-6
+  } else {
+    tol.Shannon <- GADAGcontrol$tol.Shannon
+  }
+  if (is.null(GAcontrol$pop.size)){
+    pop.size <- 10
+  } else {
+    pop.size <- GAcontrol$pop.size
+  }
+  if (is.null(GAcontrol$p.xo)){
+    p.xo <- 0.25
+  } else {
+    p.xo <- GAcontrol$p.xo
+  }
+  if (is.null(GAcontrol$p.mut)){
+    p.mut <- 0.05
+  } else {
+    p.mut <- GAcontrol$p.mut
+  }
+  if (is.null(Gradcontrol$tol.obj.inner)){
+    Gradcontrol$tol.obj.inner <- 1e-6
+  } else {
+    Gradcontrol$tol.obj.inner <- Gradcontrol$tol.obj.inner
+  }
+  if (is.null(Gradcontrol$max.ite.inner)){
+    Gradcontrol$max.ite.inner <- 50
+  } else {
+    Gradcontrol$max.ite.inner <- Gradcontrol$max.ite.inner
+  }
 
   ##### Create and evaluate initial population #####
   if (Gradcontrol$max.ite.inner < 0){
