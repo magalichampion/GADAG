@@ -73,6 +73,9 @@ Function to run GADAG, an algorithm that aims at inferring large sparse directed
  ########################################################
  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyse}}.
+}
 \author{
 \packageAuthor{GADAG}
 }

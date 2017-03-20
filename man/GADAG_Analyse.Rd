@@ -4,8 +4,8 @@
 \alias{GADAG_Analyse}
 \title{Analyse GADAG results.}
 \usage{
-GADAG_Analyse(Results, G, X, threshold = 0.1, plot.graph = FALSE,
-  plot.evol = FALSE)
+GADAG_Analyse(Results, G, X, threshold = 0.1, PlotControl = list(plot.graph
+  = FALSE, plot.evol = FALSE, plot.png = FALSE))
 }
 \arguments{
 \item{Results}{Outputs from GADAG_Run() function.}
@@ -16,9 +16,12 @@ GADAG_Analyse(Results, G, X, threshold = 0.1, plot.graph = FALSE,
 
 \item{threshold}{Thresholding value for the edges.}
 
-\item{plot.graph}{If TRUE, generates the figures (in .png) with the actual and estimated graphs.}
-
-\item{plot.evol}{If TRUE, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering).}
+\item{PlotControl}{A list containing parameters to control the prodcued graph outputs:
+\itemize{
+\item plot.graph If TRUE, generates the figures with the actual and estimated graphs,
+\item plot.evol If TRUE, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
+\item plot.png If TRUE, saves the figures in .png.
+}}
 }
 \value{
 A vector containing the scores of precision, recall, number of false positives (FP), false negatives (FN), true positives (TP), true negatives (TN) and mean squared error.

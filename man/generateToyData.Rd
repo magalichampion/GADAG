@@ -40,6 +40,9 @@ One of the following seven alternatives can be chosen for the DAG form:
  #############################################################
  toy_data <- generateToyData(n=100, p=10)
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
 \author{
 \packageAuthor{GADAG}.
 }

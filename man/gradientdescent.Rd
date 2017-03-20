@@ -37,10 +37,11 @@ A pxp triangular matrix T in a vector form.
   These functions are written using the Armadillo C++ classes.
 }
 \author{
-  Magali Champion <magali.champion@parisdescartes.fr>
+  \packageAuthor{GADAG}
 }
 \seealso{
-	\code{\link{chrom}} \code{\link{evaluation}}}
+	\code{\link{chrom}}, \code{\link{evaluation}}, \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
 \examples{
 ########################################################
 # Loading toy data

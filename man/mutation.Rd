@@ -28,6 +28,9 @@ Internal function (mutation operator) to mutate elements of a population of perm
  ########################################################
  Population_Mutation <- mutation(Pop=Population)
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
 \author{
 \packageAuthor{GADAG}
 }

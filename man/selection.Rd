@@ -39,6 +39,9 @@ Internal function of the genetic algorithm to select the permutations that will 
  ########################################################
  Selection <- selection(Pop=Population, f.pop=Evaluation$f)
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
 \author{
 \packageAuthor{GADAG}
 }
