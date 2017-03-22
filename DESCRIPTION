@@ -5,8 +5,7 @@ Version: 0.99.0
 Date: 2017-03-02
 Author: Magali Champion, Victor Picheny and Matthieu Vignes
 Maintainer: Magali Champion <magali.champion@parisdescartes.fr>
-Description: GADAG aims at learning sparse large Directed Acyclic Graphs with a
-    combination of a convex program and a tailored genetic algorithm.
+Description: GADAG aims at learning sparse large Directed Acyclic Graphs with a combination of a convex program and a tailored genetic algorithm.
 License: GPL-2
 Depends:
     igraph,
@@ -16,4 +15,4 @@ Imports:
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
 Packaged: 2017-03-17 14:56:12 UTC; magali
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
