@@ -45,11 +45,20 @@
 ##'  # Loading toy data
 ##'  ########################################################
 ##'  data(toy_data)
-##'
+##'  # toy_data is a list of two matrices corresponding to a path-shaped DAG:
+##'  # - toy_data$X is a 100x10 design matrix
+##'  # - toy_data$X is the 10x10 adjacency matrix (ground trough)
 ##'  ########################################################
 ##'  # Running GADAG
 ##'  ########################################################
+##'  # Simple run, with only the penalty term specified
 ##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
+##'
+##'  ########################################################
+##'  # Expensive run, with many evaluations
+##'  \dontrun{
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
+##'  }
 
 GADAG_Run <- function(X, lambda, threshold=0.1,
         GADAGcontrol = list(n.gen=100, tol.Shannon=1e-6, max.eval=1e4),
