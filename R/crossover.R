@@ -1,27 +1,28 @@
 ###################################################################
 ###### cross-over operator ######
 
-##' @title Crossover permutations
-##' @description Internal function of the genetic algorithm (crossover operator) to combine elements of a population of permutations.
-##' @param Pop Population of permutations from [1,p] (output from create.population() function for example).
-##' @param p.xo Crossover probability.
-##' @return A list with the following elements:
-##' \itemize{
-##' \item{Children}{ Population of permutations created after crossovering permutations of Pop.}
-##' \item{I.cross}{ Vector of integers from [1,p] corresponding to the elements of Pop that have a non-zero probability for crossovering.}
-##' }
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-##' @author \packageAuthor{GADAG}
-##' @examples
-##'  ########################################################
-##'  # Creating a population of permutations
-##'  ########################################################
-##'  Population <- create.population(p=10, pop.size=20)
-##'
-##'  ########################################################
-##'  # Crossovering the population
-##'  ########################################################
-##'  Population_Crossover <- crossover(Pop=Population)
+##' @keywords internal
+# @title Crossover permutations
+# @description Internal function of the genetic algorithm (crossover operator) to combine elements of a population of permutations.
+# @param Pop Population of permutations from [1,p] (output from create.population() function for example).
+# @param p.xo Crossover probability.
+# @return A list with the following elements:
+# \itemize{
+# \item{Children}{ Population of permutations created after crossovering permutations of Pop.}
+# \item{I.cross}{ Vector of integers from [1,p] corresponding to the elements of Pop that have a non-zero probability for crossovering.}
+# }
+# @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+# @author \packageAuthor{GADAG}
+# @examples
+#  ########################################################
+#  # Creating a population of permutations
+#  ########################################################
+#  Population <- create.population(p=10, pop.size=20)
+#
+#  ########################################################
+#  # Crossovering the population
+#  ########################################################
+#  Population_Crossover <- crossover(Pop=Population)
 
 crossover <- function(Pop,p.xo=.25){
   # INPUTS

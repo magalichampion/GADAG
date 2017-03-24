@@ -1,20 +1,21 @@
 ###################################################################
 #### creating a population of permutation vectors ####
 
-##' @title Create a population of permutations
-##' @description Internal function of the genetic algorithm to create a population of permutations.
-##' @usage create.population(p, pop.size)
-##' @param p Length of each permutation (>0), corresponding to the number of nodes of the DAG to recover for the DAG learning problem.
-##' @param pop.size Length (number of permutations) of the population (>0).
-##' @return A pop.size x p matrix corresponding to the population of permutations.
-##' @author \packageAuthor{GADAG}
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-##' @examples
-##'  ########################################################
-##'  # Creating a population of permutations
-##'  ########################################################
-##'  Population <- create.population(p=10, pop.size=20)
-##'
+##' @keywords internal
+# @title Create a population of permutations
+# @description Internal function of the genetic algorithm to create a population of permutations.
+# @usage create.population(p, pop.size)
+# @param p Length of each permutation (>0), corresponding to the number of nodes of the DAG to recover for the DAG learning problem.
+# @param pop.size Length (number of permutations) of the population (>0).
+# @return A pop.size x p matrix corresponding to the population of permutations.
+# @author \packageAuthor{GADAG}
+# @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+# @examples
+#  ########################################################
+#  # Creating a population of permutations
+#  ########################################################
+#  Population <- create.population(p=10, pop.size=20)
+#
 
 create.population = function(p, pop.size){
   # INPUTS

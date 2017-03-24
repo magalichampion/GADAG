@@ -1,22 +1,25 @@
 ###########################################################
 ### returning the permutation matrix associated to a permutation ###############
 
-##' @title Transform a permutation in a matrix form
-##' @description Internal function of the genetic algorithm to transform a permutation in a matrix form.
-##' @param c A permutation from [1,p].
-##' @return The pxp matrix of permutation associated to c.
-##' @author \packageAuthor{GADAG}
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-##' @examples
-##'  ########################################################
-##'  # Loading toy data
-##'  ########################################################
-##'  c <- sample(10)
-##'
-##'  ########################################################
-##'  # Transforming in a matrix form
-##'  ########################################################
-##'  P <- chrom(c=c)
+##' @keywords internal
+# @examples
+#  ########################################################
+#  # Loading toy data
+#  ########################################################
+#  c <- sample(10)
+#
+#  ########################################################
+#  # Transforming in a matrix form
+#  ########################################################
+#  P <- chrom(c=c)
+#
+# @title Transform a permutation in a matrix form
+# @description Internal function of the genetic algorithm to transform a permutation in a matrix form.
+# @param c A permutation from [1,p].
+# @return The pxp matrix of permutation associated to c.
+# @author \packageAuthor{GADAG}
+# @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+#
 
 chrom <- function(c){
   # INPUTS
