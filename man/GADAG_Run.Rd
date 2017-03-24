@@ -16,15 +16,12 @@ GADAG_Run(X, lambda, threshold = 0.1, GADAGcontrol = list(n.gen = 100,
 
 \item{threshold}{Thresholding value for the estimated edges.}
 
-\item{GADAGcontrol}{A list containing the conditions for terminating GADAG:
+\item{GADAGcontrol}{A list containing parameters for controlling GADAG (termination conditions and inherent parameters of the Genetic Algortihm).
+Some parameters (n.gen, max.eval and pop.size) are particularly critical in terms of computational time.
 \itemize{
 \item{n.gen}{ maximal number of population generations (>0),}
 \item{tol.Shannon}{ threshold for the Shannon entropy (>0),}
 \item{max.eval}{ maximal number of iterations for the inner optimization (>0).}
-}}
-
-\item{GAcontrol}{A list containing the genetic algorithm inherent parameters:
-\itemize{
 \item{pop.size}{ initial population size for the genetic algorithm (>0),}
 \item{p.xo}{ crossover probability of the genetic algorithm (between 0 and 1),}
 \item{p.mut}{ mutation probability of the genetic algorithm (between 0 and 1).}
@@ -69,7 +66,7 @@ Function to run GADAG, an algorithm that aims at inferring large sparse directed
  data(toy_data)
  # toy_data is a list of two matrices corresponding to a path-shaped DAG:
  # - toy_data$X is a 100x10 design matrix
- # - toy_data$X is the 10x10 adjacency matrix (ground trough)
+ # - toy_data$G is the 10x10 adjacency matrix (ground trough)
  ########################################################
  # Running GADAG
  ########################################################
