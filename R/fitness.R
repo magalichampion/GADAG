@@ -8,7 +8,8 @@
 ##' @param lambda Parameter of penalization (>0).
 ##' @return A numeric value corresponding to the fitness of the potential solution.
 ##' @author \packageAuthor{GADAG}
-##' @seealso \code{\link{chrom}}, \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+##' @rawNamespace export(fitness)
 ##' @examples
 ##'  ########################################################
 ##'  # Loading toy data
@@ -16,8 +17,10 @@
 ##'  data(toy_data)
 ##'
 ##'  p <- ncol(toy_data$X)
-##'  P <- sample(p)
-##'  P <- chrom(P)
+##'  Perm <- sample(p)
+##'  P <- matrix(0,p,p)
+##'  I <- p*seq(from = 0, to = (p-1), by = 1)+Perm
+##'  P[I] <- 1
 ##'  T <- matrix(rnorm(p),p,p)
 ##'  T[upper.tri(T)] <- 0
 ##'  T <- T-diag(diag(T))

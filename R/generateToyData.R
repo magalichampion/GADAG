@@ -16,6 +16,7 @@
 ##' \item{"quadristar"}{ node 1 is connected to nodes 2 to 4, each being connected to 1/3 of the rest of the nodes,}
 ##' \item{"sixstar"}{ same as "quadristar", with 6 nodes.}
 ##' }
+##' @rawNamespace export(generateToyData)
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @examples
 ##'  #############################################################

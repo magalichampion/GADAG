@@ -15,6 +15,13 @@
 ##' \item{p.xo}{ crossover probability of the genetic algorithm (between 0 and 1),}
 ##' \item{p.mut}{ mutation probability of the genetic algorithm (between 0 and 1).}
 ##' }
+##' @rawNamespace export(GADAG_Run)
+##' @rawNamespace import(igraph)
+##' @rawNamespace import(MASS)
+##' @rawNamespace import(Rcpp)
+##' @rawNamespace import(parallel)
+##' @rawNamespace importFrom(Rcpp, evalCpp)
+##' @rawNamespace useDynLib(GADAG)
 ##' @param Gradcontrol A list containing the parameters for controlling the inner optimization, i.e. the gradient descent
 ##' \itemize{
 ##' \item{tol.obj.inner}{ tolerance (>0),}

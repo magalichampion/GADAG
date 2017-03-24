@@ -10,6 +10,7 @@
 ##' \item plot.evol If TRUE, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
 ##' \item plot.png If TRUE, saves the figures in .png.
 ##' }
+##' @rawNamespace export(GADAG_Analyse)
 ##' @return A vector containing the scores of precision, recall, number of false positives (FP), false negatives (FN), true positives (TP), true negatives (TN) and mean squared error.
 ##' @author \packageAuthor{GADAG}
 ##' @examples
