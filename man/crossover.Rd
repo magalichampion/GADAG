@@ -32,9 +32,10 @@ Internal function of the genetic algorithm (crossover operator) to combine eleme
  ########################################################
  Population_Crossover <- crossover(Pop=Population)
 }
-\seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-}
 \author{
 \packageAuthor{GADAG}
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
+

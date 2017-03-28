@@ -48,3 +48,4 @@ Function to analyse GADAG results.
 \author{
 \packageAuthor{GADAG}
 }
+

@@ -26,9 +26,10 @@ Internal function of the genetic algorithm to transform a permutation in a matri
  ########################################################
  P <- chrom(c=c)
 }
-\seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-}
 \author{
 \packageAuthor{GADAG}
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
+

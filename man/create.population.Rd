@@ -24,9 +24,10 @@ Internal function of the genetic algorithm to create a population of permutation
  Population <- create.population(p=10, pop.size=20)
 
 }
-\seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-}
 \author{
 \packageAuthor{GADAG}
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
+

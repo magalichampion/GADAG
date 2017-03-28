@@ -67,15 +67,25 @@ Function to run GADAG, an algorithm that aims at inferring large sparse directed
  # Loading toy data
  ########################################################
  data(toy_data)
-
+ # toy_data is a list of two matrices corresponding to a path-shaped DAG:
+ # - toy_data$X is a 100x10 design matrix
+ # - toy_data$X is the 10x10 adjacency matrix (ground trough)
  ########################################################
  # Running GADAG
  ########################################################
+ # Simple run, with only the penalty term specified
  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
-}
-\seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyse}}.
+
+ ########################################################
+ # Expensive run, with many evaluations
+ \dontrun{
+ GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
+ }
 }
 \author{
 \packageAuthor{GADAG}
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyse}}.
+}
+

@@ -51,9 +51,10 @@ Internal function of the genetic algorithm that evaluates the fitness (penalized
  Evaluation <- evaluation(Pop=Population,X=toy_data$X,
                           XtX=crossprod(toy_data$X),lambda=0.1)
 }
-\seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-}
 \author{
 \packageAuthor{GADAG}
 }
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
+

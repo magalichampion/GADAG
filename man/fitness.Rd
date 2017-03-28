@@ -39,9 +39,10 @@ Internal function of the genetic algorithm that evaluates the fitness (penalized
  ########################################################
  Fitness <- fitness(P=P, X=toy_data$X, T=T, lambda=0.1)
 }
-\seealso{
-\code{\link{chrom}}, \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-}
 \author{
 \packageAuthor{GADAG}
 }
+\seealso{
+\code{\link{chrom}}, \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+}
+
