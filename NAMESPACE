@@ -2,6 +2,7 @@
 
 export(GADAG_Analyse)
 export(GADAG_Run)
+export(evaluation)
 export(fitness)
 export(generateToyData)
 import(MASS)
