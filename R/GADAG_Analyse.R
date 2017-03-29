@@ -6,28 +6,73 @@
 ##' @param threshold Thresholding value for the edges.
 ##' @param PlotControl A list containing parameters to control the prodcued graph outputs:
 ##' \itemize{
-##' \item plot.graph If TRUE, generates the figures with the actual and estimated graphs,
-##' \item plot.evol If TRUE, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
-##' \item plot.png If TRUE, saves the figures in .png.
+##' \item \code{plot.graph} If TRUE, generates the figures with the actual and estimated graphs,
+##' \item \code{plot.evol} If TRUE, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
+##' \item \code{plot.png} If TRUE, saves the figures in .png.
 ##' }
 ##' @rawNamespace export(GADAG_Analyse)
 ##' @return A vector containing the scores of precision, recall, number of false positives (FP), false negatives (FN), true positives (TP), true negatives (TN) and mean squared error.
 ##' @author \packageAuthor{GADAG}
+##' ##' @details GADAG aims at recovering the structure of an unknow DAG G, which edges represent the interactions that exist between p nodes, using n noisy observations
+##' of these nodes (design matrix X).
+##' GADAG is more precisely based on a l1-penalized (to make the estimated graph sparse enough) maximum log-likelihood estimation procedure, with the constraint that the estimated graph is a DAG.
+##' This DAG learning problem is particularly critical in the high-dimensional setting, the exploration of
+##' the whole of set of DAGs being a NP-hard problem.
+##' GADAG proposes an original formulation for the estimated DAG, splitting the
+##' initial problem into two sub-problems: node ordering and graph topology search.
+##' The node order, modelled as a permutation of [1,p] or the associated pxp matrix P, will represent the importance of the p nodes of the graph,
+##' from the node with the smallest number of children to the node with the largest number of children.
+##' The topological structure of the graph, which is given as a lower triangular matrix T,
+##' could then set the graph edges weights (including 0, equivalent to no edges).
+##' GADAG works as follows:  it efficiently looks for the best permution in an outer loop with a genetic algorithm,
+##' while a nested loop is used to find the optimal T associated to each given P. The latter internal optimization
+##' problem is solved by a steepest gradient descent approach.
+##'
 ##' @examples
-##'  ########################################################
+##'  #############################################################
 ##'  # Loading toy data
-##'  ########################################################
+##'  #############################################################
 ##'  data(toy_data)
+##'  # toy_data is a list of two matrices corresponding to a "star"
+##'  # DAG (node 1 activates all other nodes):
+##'  # - toy_data$X is a 100x10 design matrix
+##'  # - toy_data$G is the 10x10 adjacency matrix (ground trough)
 ##'
 ##'  ########################################################
-##'  # Running GADAG
+##'  # Evaluating GADAG Results
 ##'  ########################################################
+##'  # simple run, where you only get the precision, recall, number
+##'  # of false positives, true positives, false negatives, true negatives
+##'  # and mean squared error of the estimated graph
+##'
+##'  # run GADAG with the predefined parameters
 ##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
 ##'
-##'  ########################################################
-##'  # Evaluate GADAG Results
-##'  ########################################################
+##'  # analyze the results
 ##'  GADAG_analysis <- GADAG_Analyse(GADAG_results, G=toy_data$G, X=toy_data$X)
+##'
+##'  # more complex run, where you want to have some details about the procedure
+##'  \dontrun{
+##'  # run GADAG with return.level set to 1 beforehand
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,return.level=1)
+##'
+##'  # print the evolution of the algorithm
+##'  plot.evol <- TRUE
+##'  GADAG_analysis <- GADAG_Analyse(GADAG_results, G=toy_data$G, X=toy_data$X,
+##'           PlotControl = list(plot.evol=TRUE))
+##'
+##'  # in addition, print the estimated and the true graph
+##'  plot.graph <- TRUE
+##'  GADAG_analysis <- GADAG_Analyse(GADAG_results, G=toy_data$G, X=toy_data$X,
+##'           PlotControl = list(plot.evol=plot.evol, plot.graph= plot.graph))
+##'
+##'  # now save the results in .png, but only for the graphs
+##'  plot.png <- TRUE
+##'  GADAG_analysis <- GADAG_Analyse(GADAG_results, G=toy_data$G, X=toy_data$X,
+##'           PlotControl = list(plot.graph= plot.graph, plot.png = plot.png))
+##'  }
+##'
+##'
 
 GADAG_Analyse <- function(Results,G,X,threshold=0.1,PlotControl=list(plot.graph=FALSE,plot.evol=FALSE,plot.png=FALSE)){
 

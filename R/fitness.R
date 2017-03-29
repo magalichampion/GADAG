@@ -8,25 +8,37 @@
 ##' @param lambda Parameter of penalization (>0).
 ##' @return A numeric value corresponding to the fitness of the potential solution.
 ##' @author \packageAuthor{GADAG}
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{evaluation}}.
 ##' @rawNamespace export(fitness)
 ##' @examples
-##'  ########################################################
+##'  #############################################################
 ##'  # Loading toy data
-##'  ########################################################
+##'  #############################################################
 ##'  data(toy_data)
+##'  # toy_data is a list of two matrices corresponding to a "star"
+##'  # DAG (node 1 activates all other nodes):
+##'  # - toy_data$X is a 100x10 design matrix
+##'  # - toy_data$G is the 10x10 adjacency matrix (ground trough)
 ##'
-##'  p <- ncol(toy_data$X)
-##'  Perm <- sample(p)
+##'  ############################################################
+##'  # Creating a candidate solution
+##'  ############################################################
+##'  # define parameters
+##'  p <- ncol(toy_data$G)
+##'
+##'  # permutation matrix
+##'  Perm <- sample(p) # permutation in a vector form
 ##'  P <- matrix(0,p,p)
-##'  I <- p*seq(from = 0, to = (p-1), by = 1)+Perm
-##'  P[I] <- 1
+##'  I <- p*seq(from = 0, to = (p-1), by = 1) + Perm
+##'  P[I] <- 1 # Perm is tranformed in a matrix form
+##'
+##'  # lower-triangular matrix
 ##'  T <- matrix(rnorm(p),p,p)
 ##'  T[upper.tri(T)] <- 0
 ##'  T <- T-diag(diag(T))
 ##'
 ##'  ########################################################
-##'  # Computing the fitness of a potential solution
+##'  # Computing the fitness of the potential solution
 ##'  ########################################################
 ##'  Fitness <- fitness(P=P, X=toy_data$X, T=T, lambda=0.1)
 
