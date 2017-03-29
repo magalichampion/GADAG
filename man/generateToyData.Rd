@@ -39,6 +39,21 @@ One of the following seven alternatives can be chosen for the DAG form:
  # Generating toy data
  #############################################################
  toy_data <- generateToyData(n=100, p=10)
+
+ # toy_data is a list of two matrices corresponding to a "star"
+ # DAG (node 1 activates all other nodes):
+ # - toy_data$X is a 100x10 design matrix
+ # - toy_data$G is the 10x10 adjacency matrix (ground trough)
+
+ \dontrun{
+ # generate another type of data: a DAG with 100 nodes in a path form
+ toy_data <- generateToyData(n=100, p=100,type="path")
+ }
+
+ \dontrun{
+ # set the minimal edge value to 10
+ toy_data <- generateToyData(n=100, p=10, edgemin=10)
+ }
 }
 \seealso{
 \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
