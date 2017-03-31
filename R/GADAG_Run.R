@@ -1,69 +1,111 @@
 ##' @title Run GADAG
-##' @description Function to run GADAG, an algorithm that aims at inferring large sparse directed acyclic graphs by minimizing the negative log-likelihood with a convex program embedded in a genetic algorithm.
+##' @description Function to run GADAG, an algorithm that aims at inferring large sparse directed acyclic graphs by minimizing the penalized negative log-likelihood with a convex program embedded in a genetic algorithm.
 ##' @param X Design matrix, with samples (n) in rows and variables (p) in columns.
 ##' @param lambda Parameter of penalization (>0).
 ##' @param threshold Thresholding value for the estimated edges.
-##' @param GADAGcontrol A list containing the conditions for terminating GADAG:
+##' @param GADAG.control A list containing parameters for controlling GADAG (termination conditions and inherent parameters of the Genetic Algortihm).
+##' Some parameters (n.gen, max.eval and pop.size) are particularly critical for reducing the computational time.
 ##' \itemize{
-##' \item{n.gen}{ maximal number of population generations (>0),}
-##' \item{tol.Shannon}{ threshold for the Shannon entropy (>0),}
-##' \item{max.eval}{ maximal number of iterations for the inner optimization (>0).}
+##' \item{\code{n.gen}}{ maximal number of population generations (>0),}
+##' \item{\code{tol.Shannon}}{ threshold for the Shannon entropy (>0),}
+##' \item{\code{max.eval}}{ maximal number of iterations for the inner optimization (>0).}
+##' \item{\code{pop.size}}{ initial population size for the genetic algorithm (>0),}
+##' \item{\code{p.xo}}{ crossover probability of the genetic algorithm (between 0 and 1),}
+##' \item{\code{p.mut}}{ mutation probability of the genetic algorithm (between 0 and 1).}
 ##' }
-##' @param GAcontrol A list containing the genetic algorithm inherent parameters:
+##' @rawNamespace export(GADAG_Run)
+##' @rawNamespace import(igraph)
+##' @rawNamespace import(MASS)
+##' @rawNamespace import(Rcpp)
+##' @rawNamespace import(parallel)
+##' @rawNamespace importFrom(Rcpp, evalCpp)
+##' @rawNamespace useDynLib(GADAG)
+##' @param Grad.control A list containing the parameters for controlling the inner optimization, i.e. the gradient descent.
 ##' \itemize{
-##' \item{pop.size}{ initial population size for the genetic algorithm (>0),}
-##' \item{p.xo}{ crossover probability of the genetic algorithm (between 0 and 1),}
-##' \item{p.mut}{ mutation probability of the genetic algorithm (between 0 and 1).}
-##' }
-##' @param Gradcontrol A list containing the parameters for controlling the inner optimization, i.e. the gradient descent
-##' \itemize{
-##' \item{tol.obj.inner}{ tolerance (>0),}
-##' \item{max.ite.inner}{ maximum number of iterations (>0).}
+##' \item{\code{tol.obj.inner}}{ tolerance (>0),}
+##' \item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 ##' }
 ##' @param ncores Number of cores (>1, depending on your computer).
 ##' @param print.level 0 no print, 1 some info on the genetic algorithm behaviour are printed.
 ##' @param return.level 0 only best solution is returned, 1 evolution of the current best solution and statistics on the population fitness values are also returned.
 ##' @return A list with the following elements:
 ##' \itemize{
-##' \item{f.best}{ Best fitness value.}
-##' \item{P.best}{ Best node order (vector of length p).}
-##' \item{T.best}{ Corresponding best edges values (vector of length p).}
-##' \item{G.best}{ Best graph (matrix form).}
-##' \item{f.best.evol}{ Evolution of the best fitness value across the iterations (if return.level=1).}
-##' \item{P.best.evol}{ Evolution of the best node order across the iterations (if return.level=1).}
-##' \item{T.best.evol}{ Evolution of the best edges values across the iterations (if return.level=1).}
-##' \item{fmin.evol}{ Evolution of the minimal fitness value of the population across the iterations (if return.level=1).}
-##' \item{fmean.evol}{ Evolution of the averaged fitness value of the population across the iterations (if return.level=1).}
-##' \item{fp10.evol}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
-##' \item{fp90.evol}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
-##' \item{Shannon.evol}{ Evolution of the Shannon entropy of the population across the iterations (if return.level=1).}
+##' \item{\code{f.best}}{ Best fitness value.}
+##' \item{\code{P.best}}{ Best node order (vector of length p).}
+##' \item{\code{T.best}}{ Corresponding best edges values (vector of length p).}
+##' \item{\code{G.best}}{ Best graph (matrix form).}
+##' \item{\code{f.best.evol}}{ Evolution of the best fitness value across the iterations (if return.level=1).}
+##' \item{\code{P.best.evol}}{ Evolution of the best node order across the iterations (if return.level=1).}
+##' \item{\code{T.best.evol}}{ Evolution of the best edges values across the iterations (if return.level=1).}
+##' \item{\code{fmin.evol}}{ Evolution of the minimal fitness value of the population across the iterations (if return.level=1).}
+##' \item{\code{fmean.evol}}{ Evolution of the averaged fitness value of the population across the iterations (if return.level=1).}
+##' \item{\code{fp10.evol}}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
+##' \item{\code{fp90.evol}}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
+##' \item{\code{Shannon.evol}}{ Evolution of the Shannon entropy of the population across the iterations (if return.level=1).}
 ##' }
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyse}}.
 ##' @author \packageAuthor{GADAG}
+##' @details GADAG aims at recovering the structure of an unknow DAG G, which edges represent the interactions that exist between p nodes, using n noisy observations
+##' of these nodes (design matrix X).
+##' GADAG is more precisely based on a l1-penalized (to make the estimated graph sparse enough) maximum log-likelihood estimation procedure, with the constraint that the estimated graph is a DAG.
+##' This DAG learning problem is particularly critical in the high-dimensional setting, the exploration of
+##' the whole of set of DAGs being a NP-hard problem.
+##' GADAG proposes an original formulation for the estimated DAG, splitting the
+##' initial problem into two sub-problems: node ordering and graph topology search.
+##' The node order, modelled as a permutation of [1,p] or the associated pxp matrix P, will represent the importance of the p nodes of the graph,
+##' from the node with the smallest number of children to the node with the largest number of children.
+##' The topological structure of the graph, which is given as a lower triangular matrix T,
+##' could then set the graph edges weights (including 0, equivalent to no edges).
+##' GADAG works as follows:  it efficiently looks for the best permution in an outer loop with a genetic algorithm,
+##' while a nested loop is used to find the optimal T associated to each given P. The latter internal optimization
+##' problem is solved by a steepest gradient descent approach.
+##'
 ##' @examples
-##'  ########################################################
+##'  #############################################################
 ##'  # Loading toy data
-##'  ########################################################
+##'  #############################################################
 ##'  data(toy_data)
-##'  # toy_data is a list of two matrices corresponding to a path-shaped DAG:
+##'  # toy_data is a list of two matrices corresponding to a "star"
+##'  # DAG (node 1 activates all other nodes):
 ##'  # - toy_data$X is a 100x10 design matrix
-##'  # - toy_data$X is the 10x10 adjacency matrix (ground trough)
-##'  ########################################################
+##'  # - toy_data$G is the 10x10 adjacency matrix (ground trough)
+##'
+##'  #############################################################
 ##'  # Running GADAG
-##'  ########################################################
+##'  #############################################################
 ##'  # Simple run, with only the penalty term specified
 ##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
 ##'
-##'  ########################################################
-##'  # Expensive run, with many evaluations
+##'  # Expensive run with many evaluations if we refine the
+##'  # termination conditions
 ##'  \dontrun{
-##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
+##'  n.gen <- 1e10 # we allow a very large number of iterations
+##'  tol.Shannon <- 1e-10 # the entropy of Shannon of the population
+##'                       # has to be very small
+##'  max.eval <- 1e10 # we allow a very large number of nested
+##'                   # evaluation
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,
+##'       GADAG.control=list(n.gen=n.gen, tol.Shannon=tol.Shannon, max.eval=max.eval))
+##'  }
+##'
+##'  # Expensive run if we also increase the population size
+##'  \dontrun{
+##'  pop.size <- 5*ncol(toy_data$G) # this is usually a good
+##'                                 # population size
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,
+##'       GADAG.control=list(pop.size=pop.size))
+##'  }
+##'
+##'  # You can have more information about the evolution of the
+##'  # algorithm by turning return.level on
+##'  \dontrun{
+##'  return.level <- 1
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1, return.level = return.level)
 ##'  }
 
 GADAG_Run <- function(X, lambda, threshold=0.1,
-        GADAGcontrol = list(n.gen=100, tol.Shannon=1e-6, max.eval=1e4),
-        GAcontrol = list(pop.size=10, p.xo=.25, p.mut=.05),
-        Gradcontrol = list(tol.obj.inner=1e-6, max.ite.inner=50),
+        GADAG.control = list(n.gen=100, tol.Shannon=1e-6, max.eval=1e4,pop.size=10, p.xo=.25, p.mut=.05),
+        Grad.control = list(tol.obj.inner=1e-6, max.ite.inner=50),
         ncores=1,print.level=0, return.level=0) {
 
   #############################################################
@@ -92,50 +134,50 @@ GADAG_Run <- function(X, lambda, threshold=0.1,
   #############################################################
 
   ############## Initialisation step ###############
-  if (is.null(GADAGcontrol$n.gen)){
+  if (is.null(GADAG.control$n.gen)){
     n.gen <- 100
   } else {
-    n.gen <- GADAGcontrol$n.gen
+    n.gen <- GADAG.control$n.gen
   }
-  if (is.null(GADAGcontrol$max.eval)){
+  if (is.null(GADAG.control$max.eval)){
     max.eval <- 1e4
   } else {
-    max.eval <- GADAGcontrol$max.eval
+    max.eval <- GADAG.control$max.eval
   }
-  if (is.null(GADAGcontrol$tol.Shannon)){
+  if (is.null(GADAG.control$tol.Shannon)){
     tol.Shannon <- 1e-6
   } else {
-    tol.Shannon <- GADAGcontrol$tol.Shannon
+    tol.Shannon <- GADAG.control$tol.Shannon
   }
-  if (is.null(GAcontrol$pop.size)){
+  if (is.null(GADAG.control$pop.size)){
     pop.size <- 10
   } else {
-    pop.size <- GAcontrol$pop.size
+    pop.size <- GADAG.control$pop.size
   }
-  if (is.null(GAcontrol$p.xo)){
+  if (is.null(GADAG.control$p.xo)){
     p.xo <- 0.25
   } else {
-    p.xo <- GAcontrol$p.xo
+    p.xo <- GADAG.control$p.xo
   }
-  if (is.null(GAcontrol$p.mut)){
+  if (is.null(GADAG.control$p.mut)){
     p.mut <- 0.05
   } else {
-    p.mut <- GAcontrol$p.mut
+    p.mut <- GADAG.control$p.mut
   }
-  if (is.null(Gradcontrol$tol.obj.inner)){
-    Gradcontrol$tol.obj.inner <- 1e-6
+  if (is.null(Grad.control$tol.obj.inner)){
+    Grad.control$tol.obj.inner <- 1e-6
   } else {
-    Gradcontrol$tol.obj.inner <- Gradcontrol$tol.obj.inner
+    Grad.control$tol.obj.inner <- Grad.control$tol.obj.inner
   }
-  if (is.null(Gradcontrol$max.ite.inner)){
-    Gradcontrol$max.ite.inner <- 50
+  if (is.null(Grad.control$max.ite.inner)){
+    Grad.control$max.ite.inner <- 50
   } else {
-    Gradcontrol$max.ite.inner <- Gradcontrol$max.ite.inner
+    Grad.control$max.ite.inner <- Grad.control$max.ite.inner
   }
 
   ##### Create and evaluate initial population #####
-  if (Gradcontrol$max.ite.inner < 0){
-    stop("Gradcontrol$max.ite.inner should be non-negative.")
+  if (Grad.control$max.ite.inner < 0){
+    stop("Grad.control$max.ite.inner should be non-negative.")
   }
 
   n <- dim(X)[1]
@@ -143,7 +185,7 @@ GADAG_Run <- function(X, lambda, threshold=0.1,
   XtX <- crossprod(X)
 
   Pop       <- create.population(p, pop.size)
-  evalTandf <- evaluation(Pop, X, XtX, lambda, Gradcontrol = Gradcontrol, ncores=ncores)
+  evalTandf <- evaluation(Pop, X, XtX, lambda, Grad.control = Grad.control, ncores=ncores)
   f.pop     <- evalTandf$f
   T.pop     <- evalTandf$Tpop
   f.count   <- pop.size
@@ -202,7 +244,7 @@ GADAG_Run <- function(X, lambda, threshold=0.1,
 
     if (length(I.cross)>1){
       Children   <- mutation(Children, p.mut=p.mut)
-      evalTandfe <- evaluation(Pop=Children, X=X, XtX=XtX, lambda=lambda, Gradcontrol=Gradcontrol, ncores=ncores)
+      evalTandfe <- evaluation(Pop=Children, X=X, XtX=XtX, lambda=lambda, Grad.control=Grad.control, ncores=ncores)
       I.cross <- I[I.cross]
       Pop[I.cross,]   <- Children
       f.pop[I.cross]  <- evalTandfe$f
