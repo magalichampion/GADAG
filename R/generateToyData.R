@@ -1,20 +1,20 @@
 ##' @title Generate toy data for running GADAG
-##' @description This function generates toy data (a directed acyclic graph and a design matrix) that can be used to run GADAG.
+##' @description This function generates toy data that can be used to run GADAG: the adjacency matrix of a DAG with p nodes and the design matrix with n observations of the distribution of the p nodes.
 ##' @param n Number of samples in the design matrix.
 ##' @param p Number of nodes of the DAG.
-##' @param edgemin Minimal value for the non-null edges of the DAG.
-##' @param type Form of the DAG. It can be chosen between 7 alternatives: "star", "bistar", "full", "path", "quadristar", "sixstar" (see details below).
+##' @param edgemin Minimal value for the non-null edges of the DAG (between 0 and 1).
+##' @param type Form of the DAG. It can be chosen between 7 alternatives: \code{"star"}, \code{"bistar"}, \code{"full"}, \code{"path"}, \code{"quadristar"}, \code{"sixstar"} (see details below).
 ##' @param seed Fix the seed.
 ##' @return A list containing the design nxp matrix X (with samples in rows and variables in columns) and the adjacency matrix G associated to the DAG with p nodes.
 ##' @author \packageAuthor{GADAG}.
 ##' @details One of the following seven alternatives can be chosen for the DAG form:
 ##' \itemize{
-##' \item{"star"}{ star-shaped DAG (all active edges start from node 1),}
-##' \item{"bistar"}{ half of the edges start from node 1 and the other half from node 2,}
-##' \item{"full"}{ full DAG (all the edges are active),}
-##' \item{"path"}{ path-shaped DAG (all the nodes are connected by a single path),}
-##' \item{"quadristar"}{ node 1 is connected to nodes 2 to 4, each being connected to 1/3 of the rest of the nodes,}
-##' \item{"sixstar"}{ same as "quadristar", with 6 nodes.}
+##' \item{\code{"star"}}{ star-shaped DAG (all active edges start from node 1),}
+##' \item{\code{"bistar"}}{ half of the edges start from node 1 and the other half from node 2,}
+##' \item{\code{"full"}}{ full DAG (all the edges are active),}
+##' \item{\code{"path"}}{ path-shaped DAG (all the nodes are connected by a single path),}
+##' \item{\code{"quadristar"}}{ node 1 is connected to nodes 2 to 4, each being connected to 1/3 of the rest of the nodes,}
+##' \item{\code{"sixstar"}}{ same as \code{"quadristar"}, with 6 nodes.}
 ##' }
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @examples
@@ -34,8 +34,8 @@
 ##'  }
 ##'
 ##'  \dontrun{
-##'  # set the minimal edge value to 10
-##'  toy_data <- generateToyData(n=100, p=10, edgemin=10)
+##'  # set the minimal edge value to 1
+##'  toy_data <- generateToyData(n=100, p=10, edgemin=1) # all edges are set to 1
 ##'  }
 
 generateToyData <- function(n, p, edgemin=0, type="star", seed=42) {
@@ -66,6 +66,10 @@ generateToyData <- function(n, p, edgemin=0, type="star", seed=42) {
 
   if (n==1){
     stop("You need more than one sample to run GADAG.")
+  }
+
+  if (edgemin >1 || edgemin < 0){
+    stop("edgemin has to taken between O and 1.")
   }
 
   set.seed(seed)

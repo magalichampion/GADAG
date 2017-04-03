@@ -1,23 +1,15 @@
 #################################################################
 #### evaluating a solution ####
 ##' @title Evaluate the fitness of a population
-##' @description Internal function of the genetic algorithm that evaluates the fitness (penalized log-likelihood) of a population of permutations. It internally computes the best triangular matrix associated to each permutation.
-##' @param Pop Population of permutations from [1,p] (output from create.population() function for example).
+##' @description Internal function of the genetic algorithm that evaluates the fitness (penalized log-likelihood) of a set (population) of permutations. It internally computes the best triangular matrix associated to each permutation of the population.
+##' @param Pop Population of permutations from [1,p]: matrix with \code{pop.size} rows and p columns, each row corresponding to one permutation of the population.
 ##' @param X Design matrix, with samples (n) in rows and variables (p) in columns.
-##' @param XtX Cross-product of X. Should be computed (crossprod(X)) before running the evaluation() function.
+##' @param XtX (optional) Cross-product of X; computed if not provided.
 ##' @param lambda Parameter of penalization (>0).
-##' @param Gradcontrol A list containing the parameters for controlling the inner optimization, i.e. the gradient descent
-##' @keywords internal
-##' @title Evaluate the fitness of a population
-##' @description Internal function of the genetic algorithm that evaluates the fitness (penalized log-likelihood) of a population of permutations. It internally computes the best triangular matrix associated to each permutation.
-##' @param Pop Population of permutations from [1,p].
-##' @param X Design matrix, with samples (n) in rows and variables (p) in columns.
-##' @param XtX Cross-product of X. Should be computed (crossprod(X)) before running the evaluation() function.
-##' @param lambda Parameter of penalization (>0).
-##' @param Grad.control A list containing the parameters for controlling the inner optimization, i.e. the gradient descent
+##' @param grad.control A list containing the parameters for controlling the inner optimization, i.e. the gradient descent
 ##' \itemize{
-##' \item{tol.obj.inner}{ tolerance (>0),}
-##' \item{max.ite.inner}{ maximum number of iterations (>0).}
+##' \item{\code{tol.obj.inner}}{ tolerance (>0),}
+##' \item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 ##' }
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @param ncores Number of cores (>1, depending on your computer).
@@ -34,10 +26,10 @@
 ##'  data(toy_data)
 ##' @rawNamespace export(evaluation)
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{fitness}}.
-##' @param ncores Number of cores (>1, depending on your computer).
+##' @param ncores Number of cores (>0, depending on your computer).
 ##' @return A list with the following elements:
 ##' \itemize{
-##' \item{\code{Tpop}}{ Matrix with pxp columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
+##' \item{\code{Tpop}}{ Matrix with p rows and pop.size columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
 ##' \item{\code{f}}{ Fitness of the population.}
 ##' }
 ##' @author \packageAuthor{GADAG}
@@ -68,15 +60,15 @@
 ##'  # Evaluating the fitness of the population
 ##'  ########################################################
 ##'  # evaluation of the whole population
-##'  Evaluation <- evaluation(Pop=Pop,X=toy_data$X,
-##'                           XtX=crossprod(toy_data$X),lambda=0.1)
+##'  Evaluation <- evaluation(Pop=Pop,X=toy_data$X,lambda=0.1)
+##'  print(Evaluation$f) # here is the fitness of the whole population
 ##'
 ##'  # evaluation of one of the permutation
 ##'  Perm <- Pop[1,]
-##'  Evaluation <- evaluation(Pop=Perm,toy_data$X,
-##'                           XtX=crossprod(toy_data$X),lambda=0.1)
+##'  Evaluation <- evaluation(Pop=Perm,toy_data$X,lambda=0.1)
+##'  T <- matrix(Evaluation$Tpop,p,p) # that is the optimal matrix T associated to Perm
 
-evaluation <- function(Pop, X, XtX, lambda, Grad.control = list(tol.obj=1e-6, max.ite=50), ncores=1){
+evaluation <- function(Pop, X, XtX=NULL, lambda, grad.control = list(tol.obj=1e-6, max.ite=50), ncores=1){
   # Pop: population of permutations (pop.size*p)
   # X: observation matrix (n*p)
   # XtX: t(X)%*%X matrix, precomputed for speed
@@ -88,8 +80,20 @@ evaluation <- function(Pop, X, XtX, lambda, Grad.control = list(tol.obj=1e-6, ma
   # List of two with
   # Tpop: optimal T values for the population (pop.size*p^2 matrix, one row for each individual)
   # f: fitness of the population
-  tol.obj <- Grad.control$tol.obj
-  max.ite <- Grad.control$max
+  if (is.null(grad.control$tol.obj)){
+    tol.obj <- 1e-6
+  } else {
+    tol.obj <- grad.control$tol.obj
+  }
+  if (is.null(grad.control$max.ite)){
+    max.ite <- 50
+  } else {
+    max.ite <- grad.control$max.ite
+  }
+
+  if (is.null(XtX)) {
+    XtX <- crossprod(X)
+  }
 
   n <- dim(X)[1]
   p <- dim(X)[2]
