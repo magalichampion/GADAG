@@ -6,7 +6,7 @@
 \usage{
 GADAG_Run(X, lambda, threshold = 0.1, GADAG.control = list(n.gen = 100,
   tol.Shannon = 1e-06, max.eval = 10000, pop.size = 10, p.xo = 0.25, p.mut =
-  0.05), Grad.control = list(tol.obj.inner = 1e-06, max.ite.inner = 50),
+  0.05), grad.control = list(tol.obj.inner = 1e-06, max.ite.inner = 50),
   ncores = 1, print.level = 0, return.level = 0)
 }
 \arguments{
@@ -21,19 +21,19 @@ Some parameters (n.gen, max.eval and pop.size) are particularly critical for red
 \itemize{
 \item{\code{n.gen}}{ maximal number of population generations (>0),}
 \item{\code{tol.Shannon}}{ threshold for the Shannon entropy (>0),}
-\item{\code{max.eval}}{ maximal number of iterations for the inner optimization (>0).}
+\item{\code{max.eval}}{ maximal number of calls of the evaluation function (inner optimization) (>0),}
 \item{\code{pop.size}}{ initial population size for the genetic algorithm (>0),}
 \item{\code{p.xo}}{ crossover probability of the genetic algorithm (between 0 and 1),}
 \item{\code{p.mut}}{ mutation probability of the genetic algorithm (between 0 and 1).}
 }}
 
-\item{Grad.control}{A list containing the parameters for controlling the inner optimization, i.e. the gradient descent.
+\item{grad.control}{A list containing the parameters for controlling the inner optimization, i.e. the gradient descent.
 \itemize{
 \item{\code{tol.obj.inner}}{ tolerance (>0),}
 \item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 }}
 
-\item{ncores}{Number of cores (>1, depending on your computer).}
+\item{ncores}{Number of cores (>0, depending on your computer).}
 
 \item{print.level}{0 no print, 1 some info on the genetic algorithm behaviour are printed.}
 
@@ -59,22 +59,6 @@ A list with the following elements:
 \description{
 Function to run GADAG, an algorithm that aims at inferring large sparse directed acyclic graphs by minimizing the penalized negative log-likelihood with a convex program embedded in a genetic algorithm.
 }
-\details{
-GADAG aims at recovering the structure of an unknow DAG G, which edges represent the interactions that exist between p nodes, using n noisy observations
-of these nodes (design matrix X).
-GADAG is more precisely based on a l1-penalized (to make the estimated graph sparse enough) maximum log-likelihood estimation procedure, with the constraint that the estimated graph is a DAG.
-This DAG learning problem is particularly critical in the high-dimensional setting, the exploration of
-the whole of set of DAGs being a NP-hard problem.
-GADAG proposes an original formulation for the estimated DAG, splitting the
-initial problem into two sub-problems: node ordering and graph topology search.
-The node order, modelled as a permutation of [1,p] or the associated pxp matrix P, will represent the importance of the p nodes of the graph,
-from the node with the smallest number of children to the node with the largest number of children.
-The topological structure of the graph, which is given as a lower triangular matrix T,
-could then set the graph edges weights (including 0, equivalent to no edges).
-GADAG works as follows:  it efficiently looks for the best permution in an outer loop with a genetic algorithm,
-while a nested loop is used to find the optimal T associated to each given P. The latter internal optimization
-problem is solved by a steepest gradient descent approach.
-}
 \examples{
  #############################################################
  # Loading toy data
@@ -90,6 +74,7 @@ problem is solved by a steepest gradient descent approach.
  #############################################################
  # Simple run, with only the penalty term specified
  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
+ print(GADAG_results$G.best) # here is the best graph solution
 
  # Expensive run with many evaluations if we refine the
  # termination conditions
@@ -97,16 +82,18 @@ problem is solved by a steepest gradient descent approach.
  n.gen <- 1e10 # we allow a very large number of iterations
  tol.Shannon <- 1e-10 # the entropy of Shannon of the population
                       # has to be very small
- max.eval <- 1e10 # we allow a very large number of nested
-                  # evaluation
+ pop.size <- 5*ncol(toy_data$G) # this is usually a good
+                                # population size
+ max.eval <- n.gen * pop.size # maximal number of nested
+                              # evaluation
  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,
-      GADAG.control=list(n.gen=n.gen, tol.Shannon=tol.Shannon, max.eval=max.eval))
+      GADAG.control=list(n.gen=n.gen, tol.Shannon=tol.Shannon,
+                         pop.size = pop.size, max.eval=max.eval))
  }
 
  # Expensive run if we also increase the population size
  \dontrun{
- pop.size <- 5*ncol(toy_data$G) # this is usually a good
-                                # population size
+ pop.size <- 10*ncol(toy_data$G)
  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,
       GADAG.control=list(pop.size=pop.size))
  }
@@ -116,10 +103,12 @@ problem is solved by a steepest gradient descent approach.
  \dontrun{
  return.level <- 1
  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1, return.level = return.level)
+ print(GADAG_results$f.best.evol) # this shows the evolution of the fitness
+                                  # across the iterations
  }
 }
 \seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyse}}.
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
 }
 \author{
 \packageAuthor{GADAG}

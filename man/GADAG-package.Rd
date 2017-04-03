@@ -4,10 +4,27 @@
 \title{
 \packageTitle{GADAG}
 }
+\seealso{\code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}}
+
 \description{
 \packageDescription{GADAG}
 }
 \details{
+
+GADAG aims at recovering the structure of an unknow DAG G, which edges represent the interactions that exist between p nodes, using n noisy observations
+  of these nodes (design matrix X).
+  GADAG is more precisely based on a l1-penalized (to make the estimated graph sparse enough) maximum log-likelihood estimation procedure, with the constraint that the estimated graph is a DAG.
+  This DAG learning problem is particularly critical in the high-dimensional setting, the exploration of
+  the whole of set of DAGs being a NP-hard problem.
+  GADAG proposes an original formulation for the estimated DAG, splitting the
+  initial problem into two sub-problems: node ordering and graph topology search.
+  The node order, modelled as a permutation of [1,p] or the associated pxp matrix P, will represent the importance of the p nodes of the graph,
+  from the node with the smallest number of children to the node with the largest number of children.
+  The topological structure of the graph, which is given as a lower triangular matrix T,
+  could then set the graph edges weights (including 0, equivalent to no edges).
+  GADAG works as follows:  it efficiently looks for the best permution in an outer loop with a genetic algorithm,
+  while a nested loop is used to find the optimal T associated to each given P. The latter internal optimization
+  problem is solved by a steepest gradient descent approach.
 
 The DESCRIPTION file:
 \packageDESCRIPTION{GADAG}
@@ -59,5 +76,8 @@ Maintainer: \packageMaintainer{GADAG}
   \dontrun{
   return.level <- 1
   GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1, return.level = return.level)
+  print(GADAG_results$f.best.evol) # this shows the evolution of the fitness
+                                   # across the iterations
+
   }
 }

@@ -4,35 +4,35 @@
 \alias{evaluation}
 \title{Evaluate the fitness of a population}
 \usage{
-evaluation(Pop, X, XtX, lambda, Grad.control = list(tol.obj = 1e-06, max.ite =
-  50), ncores = 1)
+evaluation(Pop, X, XtX = NULL, lambda, grad.control = list(tol.obj = 1e-06,
+  max.ite = 50), ncores = 1)
 }
 \arguments{
-\item{Pop}{Population of permutations from [1,p].}
+\item{Pop}{Population of permutations from [1,p]: matrix with \code{pop.size} rows and p columns, each row corresponding to one permutation of the population.}
 
 \item{X}{Design matrix, with samples (n) in rows and variables (p) in columns.}
 
-\item{XtX}{Cross-product of X. Should be computed (crossprod(X)) before running the evaluation() function.}
+\item{XtX}{(optional) Cross-product of X; computed if not provided.}
 
 \item{lambda}{Parameter of penalization (>0).}
 
-\item{Grad.control}{A list containing the parameters for controlling the inner optimization, i.e. the gradient descent
+\item{grad.control}{A list containing the parameters for controlling the inner optimization, i.e. the gradient descent
 \itemize{
-\item{tol.obj.inner}{ tolerance (>0),}
-\item{max.ite.inner}{ maximum number of iterations (>0).}
+\item{\code{tol.obj.inner}}{ tolerance (>0),}
+\item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 }}
 
-\item{ncores}{Number of cores (>1, depending on your computer).}
+\item{ncores}{Number of cores (>0, depending on your computer).}
 }
 \value{
 A list with the following elements:
 \itemize{
-\item{\code{Tpop}}{ Matrix with pxp columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
+\item{\code{Tpop}}{ Matrix with p rows and pop.size columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
 \item{\code{f}}{ Fitness of the population.}
 }
 }
 \description{
-Internal function of the genetic algorithm that evaluates the fitness (penalized log-likelihood) of a population of permutations. It internally computes the best triangular matrix associated to each permutation.
+Internal function of the genetic algorithm that evaluates the fitness (penalized log-likelihood) of a set (population) of permutations. It internally computes the best triangular matrix associated to each permutation of the population.
 }
 \examples{
  #############################################################
@@ -61,13 +61,13 @@ Internal function of the genetic algorithm that evaluates the fitness (penalized
  # Evaluating the fitness of the population
  ########################################################
  # evaluation of the whole population
- Evaluation <- evaluation(Pop=Pop,X=toy_data$X,
-                          XtX=crossprod(toy_data$X),lambda=0.1)
+ Evaluation <- evaluation(Pop=Pop,X=toy_data$X,lambda=0.1)
+ print(Evaluation$f) # here is the fitness of the whole population
 
  # evaluation of one of the permutation
  Perm <- Pop[1,]
- Evaluation <- evaluation(Pop=Perm,toy_data$X,
-                          XtX=crossprod(toy_data$X),lambda=0.1)
+ Evaluation <- evaluation(Pop=Perm,toy_data$X,lambda=0.1)
+ T <- matrix(Evaluation$Tpop,p,p) # that is the optimal matrix T associated to Perm
 }
 \seealso{
 \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{fitness}}.
@@ -75,4 +75,3 @@ Internal function of the genetic algorithm that evaluates the fitness (penalized
 \author{
 \packageAuthor{GADAG}
 }
-\keyword{internal}

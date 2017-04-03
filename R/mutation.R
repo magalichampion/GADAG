@@ -45,7 +45,7 @@ mutation <- function(Pop, p.mut=0.05){
     rank.mut <- cbind(rank.mut1,rank.mut2)
     if (length(I.mut)>1){
       for (j in (1:length(I.mut))){
-        Popmut[j,rank.mut[,j]] <- Pop[I.mut[j],rev(rank.mut[,j])]
+        Popmut[j,rank.mut[j,]] <- Pop[I.mut[j],rev(rank.mut[j,])]
         newPop[I.mut,] <- Popmut
       }
     } else {

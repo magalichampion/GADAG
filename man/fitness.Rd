@@ -11,7 +11,7 @@ fitness(P,X,T,lambda)
 
 \item{X}{Design matrix, with samples (n) in rows and variables (p) in columns.}
 
-\item{T}{A pxp triangular matrix.}
+\item{T}{A pxp lower-triangular matrix.}
 
 \item{lambda}{Parameter of penalization (>0).}
 }
@@ -41,17 +41,17 @@ Internal function of the genetic algorithm that evaluates the fitness (penalized
  Perm <- sample(p) # permutation in a vector form
  P <- matrix(0,p,p)
  I <- p*seq(from = 0, to = (p-1), by = 1) + Perm
- P[I] <- 1 # Perm is tranformed in a matrix form
+ P[I] <- 1 # Perm is tranformed into a matrix form
 
  # lower-triangular matrix
  T <- matrix(rnorm(p),p,p)
- T[upper.tri(T)] <- 0
- T <- T-diag(diag(T))
+ T[upper.tri(T,diag=TRUE)] <- 0
 
  ########################################################
  # Computing the fitness of the potential solution
  ########################################################
  Fitness <- fitness(P=P, X=toy_data$X, T=T, lambda=0.1)
+ print(Fitness) # here is the fitness of the candidate solution (P,T)
 }
 \seealso{
 \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{evaluation}}.
