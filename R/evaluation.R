@@ -18,12 +18,6 @@
 ##' \item{Tpop}{ Matrix with pxp columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
 ##' \item{f}{ Fitness of the population.}
 ##' }
-##' @author \packageAuthor{GADAG}
-##' @examples
-##'  ########################################################
-##'  # Loading toy data
-##'  ########################################################
-##'  data(toy_data)
 ##' @rawNamespace export(evaluation)
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{fitness}}.
 ##' @param ncores Number of cores (>0, depending on your computer).
@@ -66,7 +60,9 @@
 ##'  # evaluation of one of the permutation
 ##'  Perm <- Pop[1,]
 ##'  Evaluation <- evaluation(Pop=Perm,toy_data$X,lambda=0.1)
-##'  T <- matrix(Evaluation$Tpop,p,p) # that is the optimal matrix T associated to Perm
+##'
+##'  # optimal matrix T associated to Perm:
+##'  T <- matrix(Evaluation$Tpop,p,p)
 
 evaluation <- function(Pop, X, XtX=NULL, lambda, grad.control = list(tol.obj=1e-6, max.ite=50), ncores=1){
   # Pop: population of permutations (pop.size*p)

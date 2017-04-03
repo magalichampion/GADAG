@@ -1,5 +1,14 @@
 ##' @title Run GADAG
-##' @description Function to run GADAG, an algorithm that aims at inferring large sparse directed acyclic graphs by minimizing the penalized negative log-likelihood with a convex program embedded in a genetic algorithm.
+##' @description Function to run GADAG, an algorithm that aims at inferring large sparse directed acyclic graphs
+##' based on an observation sample X, by minimizing the penalized negative log-likelihood with a convex program embedded in a genetic algorithm.
+##' @details This function returns as a primary output \code{G.best}, the adjacency matrix of the inferred graph. This matrix is computed thanks
+##' to its decomposition (\code{P.best}, \code{T.best}).
+##'
+##' The values of the inputs \code{n.gen}, \code{max.eval} and \code{pop.size} largely influence the algorithm inference capability,
+##' but also its computational cost. As a rule-of-thumb, we recommend setting \code{pop.size} between 1 to 10 times the number of nodes,
+##' and \code{n.gen} between 10 to 100 times \code{pop.size}. \code{tol.Shannon} may be decreased in case of premature stop. The other
+##' parameters should only be modified with care.
+##'
 ##' @param X Design matrix, with samples (n) in rows and variables (p) in columns.
 ##' @param lambda Parameter of penalization (>0).
 ##' @param threshold Thresholding value for the estimated edges.
@@ -7,9 +16,9 @@
 ##' Some parameters (n.gen, max.eval and pop.size) are particularly critical for reducing the computational time.
 ##' \itemize{
 ##' \item{\code{n.gen}}{ maximal number of population generations (>0),}
-##' \item{\code{tol.Shannon}}{ threshold for the Shannon entropy (>0),}
-##' \item{\code{max.eval}}{ maximal number of calls of the evaluation function (inner optimization) (>0),}
 ##' \item{\code{pop.size}}{ initial population size for the genetic algorithm (>0),}
+##' \item{\code{max.eval}}{ overall maximal number of calls of the evaluation function (>0, should be of the order of \code{n.gen}*\code{pop.size}),}
+##' \item{\code{tol.Shannon}}{ threshold for the Shannon entropy (>0),}
 ##' \item{\code{p.xo}}{ crossover probability of the genetic algorithm (between 0 and 1),}
 ##' \item{\code{p.mut}}{ mutation probability of the genetic algorithm (between 0 and 1).}
 ##' }

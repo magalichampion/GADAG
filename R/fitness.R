@@ -32,8 +32,7 @@
 ##'  # permutation matrix
 ##'  Perm <- sample(p) # permutation in a vector form
 ##'  P <- matrix(0,p,p)
-##'  I <- p*seq(from = 0, to = (p-1), by = 1) + Perm
-##'  P[I] <- 1 # Perm is tranformed into a matrix form
+##'  P[p*0:(p-1) + Perm] <- 1 # Perm is tranformed into a matrix form
 ##'
 ##'  # lower-triangular matrix
 ##'  T <- matrix(rnorm(p),p,p)
