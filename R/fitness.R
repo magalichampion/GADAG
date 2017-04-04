@@ -20,9 +20,6 @@
 ##'  # - toy_data$X is a 100x10 design matrix
 ##'  # - toy_data$G is the 10x10 adjacency matrix (ground trough)
 ##'
-##'  p <- ncol(toy_data$X)
-##'  P <- sample(p)
-##'  P <- chrom(P)
 ##'  ############################################################
 ##'  # Creating a candidate solution
 ##'  ############################################################

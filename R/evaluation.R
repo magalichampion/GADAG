@@ -11,7 +11,6 @@
 ##' \item{\code{tol.obj.inner}}{ tolerance (>0),}
 ##' \item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 ##' }
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 ##' @param ncores Number of cores (>1, depending on your computer).
 ##' @return A list with the following elements:
 ##' \itemize{
@@ -20,7 +19,6 @@
 ##' }
 ##' @rawNamespace export(evaluation)
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{fitness}}.
-##' @param ncores Number of cores (>0, depending on your computer).
 ##' @return A list with the following elements:
 ##' \itemize{
 ##' \item{\code{Tpop}}{ Matrix with p rows and pop.size columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
