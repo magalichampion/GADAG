@@ -70,7 +70,7 @@
 ##'  #############################################################
 ##'  # Simple run, with only the penalty term specified
 ##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
-##'  print(GADAG_results$G.best) # here is the best graph solution
+##'  print(GADAG_results$G.best) # optimal adjacency matrix graph
 ##'
 ##'  # Expensive run with many evaluations if we refine the
 ##'  # termination conditions
@@ -85,6 +85,7 @@
 ##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,
 ##'       GADAG.control=list(n.gen=n.gen, tol.Shannon=tol.Shannon,
 ##'                          pop.size = pop.size, max.eval=max.eval))
+##'  print(GADAG_results$G.best) # optimal adjacency matrix graph
 ##'  }
 ##'
 ##'  # Expensive run if we also increase the population size
@@ -92,6 +93,7 @@
 ##'  pop.size <- 10*ncol(toy_data$G)
 ##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,
 ##'       GADAG.control=list(pop.size=pop.size))
+##'  print(GADAG_results$G.best) # optimal adjacency matrix graph
 ##'  }
 ##'
 ##'  # You can have more information about the evolution of the
@@ -345,12 +347,12 @@ GADAG_Run <- function(X, lambda, threshold=0.1,
   #############################################################
   #############################################################
   if (return.level > 0) {
-    return(list(f.best=f.best.alltimes, P.best=P.best.alltimes, T.best=T.best.alltimes,G.best=Gbest.bin,
+    return(list(f.best=f.best.alltimes, P.best=P.best.alltimes, T.best=T.best.alltimes,G.best=G.best,
                 f.best.evol=f.best.alltimes.save[1:k], P.best.evol=P.best.alltimes.save[1:k,], T.best.evol=T.best.alltimes.save[1:k,],
                 fmin.evol=fmin.pop.save[1:k], fmean.evol=fmean.pop.save[1:k], fp10.evol=fp10.pop.save[1:k],
                 fp90.evol=fp90.pop.save[1:k],
                 Shannon.evol=Shannon.save[1:k,]))
   } else {
-    return(list(f.best=f.best.alltimes, P.best=P.best.alltimes, T.best=T.best.alltimes, G.best=Gbest.bin))
+    return(list(f.best=f.best.alltimes, P.best=P.best.alltimes, T.best=T.best.alltimes, G.best=G.best))
   }
 }
