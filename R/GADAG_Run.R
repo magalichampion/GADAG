@@ -55,6 +55,10 @@
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
 ##' @author \packageAuthor{GADAG}
 ##'
+##'@references
+##' M. Champion, V. Picheny, M. Vignes (2017), Inferring large graphs using l-1 penalized likelihood,
+##' \link{https://arxiv.org/pdf/1507.02018.pdf}. \cr \cr
+##'
 ##' @examples
 ##'  #############################################################
 ##'  # Loading toy data

@@ -35,6 +35,10 @@
   Maintainer: \packageMaintainer{GADAG}
 }
 \keyword{Directed Acyclic Graphs - Convex program - Optimization}
+\references{
+M. Champion, V. Picheny, M. Vignes (2017), Inferring large graphs using l-1 penalized likelihood,
+\link{https://arxiv.org/pdf/1507.02018.pdf}. \cr \cr
+}
 \examples{
   #############################################################
   # Loading toy data
