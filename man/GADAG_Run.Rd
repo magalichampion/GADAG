@@ -119,8 +119,12 @@ parameters should only be modified with care.
                                   # across the iterations
  }
 }
+\references{
+M. Champion, V. Picheny, M. Vignes (2017), Inferring large graphs using l-1 penalized likelihood,
+'https://arxiv.org/pdf/1507.02018.pdf'. \cr \cr
+}
 \seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
+\code{\link{GADAG}}, \code{\link{GADAG_CV}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
 }
 \author{
 \packageAuthor{GADAG}

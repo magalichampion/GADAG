@@ -3,6 +3,7 @@
 ##' @param n Number of samples in the design matrix.
 ##' @param p Number of nodes of the DAG.
 ##' @param edgemin Minimal value for the non-null edges of the DAG (between 0 and 1).
+##' @param Cov (optional) Covariance matrix for the noise variables (identity matrix by default)
 ##' @param type Form of the DAG. It can be chosen between 7 alternatives: \code{"star"}, \code{"bistar"}, \code{"full"}, \code{"path"}, \code{"quadristar"}, \code{"sixstar"} (see details below).
 ##' @param seed Fix the seed.
 ##' @return A list containing the design nxp matrix X (with samples in rows and variables in columns) and the adjacency matrix G associated to the DAG with p nodes.
@@ -37,8 +38,15 @@
 ##'  # set the minimal edge value to 1
 ##'  toy_data <- generateToyData(n=100, p=10, edgemin=1) # all edges are set to 1
 ##'  }
+##'
+##'  \dontrun{
+##'  # non-independent noises
+##'  A <- matrix(runif(10^2)*2-1, ncol=10)
+##'  Sigma <- t(A) %*% A
+##'  toy_data <- generateToyData(n=100, p=10, edgemin=1, Cov = Sigma)
+##'  }
 
-generateToyData <- function(n, p, edgemin=0, type="star", seed=42) {
+generateToyData <- function(n, p, edgemin=0, Cov = NULL, type="star", seed=42) {
   #-----------------------------------------------------
   # Generates DAGs and associated data
   # The form of the DAG can be chosen between 7 alternatives (see below)
@@ -48,6 +56,7 @@ generateToyData <- function(n, p, edgemin=0, type="star", seed=42) {
   # n: number of observations
   # p: number of nodes
   # edgemin: minimal value for the non-null edges. Scalar in [0,1]
+  # Cov: covariance matrix for the noise variables
   # type: "star": star-shaped DAG (all active edges start from node 1)
   #       "bistar": half of the edges start from node 1 and the other half from node 2
   #       "full": full DAG (all the edges are active)
@@ -114,7 +123,8 @@ generateToyData <- function(n, p, edgemin=0, type="star", seed=42) {
     G[6, 1:(4*p1+6)] <- 0
   }
 
-  eps <- matrix(rnorm(n*p,mean=0,sd=1),n,p)
+  #eps <- matrix(rnorm(n*p,mean=0,sd=1),n,p)
+  eps <- mvrnorm(n = n,mu = rep(0,p), Sigma=Sigma, empirical = TRUE)
   X <- eps %*% ginv(diag(1,p,p)-G)
   X = X - matrix(1,n,1) %*% colMeans(X)
   X = X / sqrt( (1/n) * matrix(1,n,1) %*% colSums(X^2))

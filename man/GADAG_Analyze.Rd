@@ -4,9 +4,8 @@
 \alias{GADAG_Analyze}
 \title{Analyze GADAG results.}
 \usage{
-GADAG_Analyze(Results, G = NULL, X = NULL, threshold = 0.1,
-  plot.control = list(plot.graph = FALSE, plot.evol = FALSE, plot.png =
-  FALSE))
+GADAG_Analyze(Results, G = NULL, X = NULL, plot.control = list(plot.graph
+  = 0, plot.evol = 0, plot.png = 0))
 }
 \arguments{
 \item{Results}{Outputs from \code{GADAG_Run()} function.}
@@ -15,13 +14,11 @@ GADAG_Analyze(Results, G = NULL, X = NULL, threshold = 0.1,
 
 \item{X}{(optional) Design matrix with samples (n) in rows and variables (p) in columns.}
 
-\item{threshold}{Thresholding value for the edges.}
-
 \item{plot.control}{A list containing parameters to control the produced graph outputs (\code{return.level} has to be turned to 1 in the main code beforehand):
 \itemize{
-\item \code{plot.graph} If TRUE, generates the figures with the actual and estimated graphs,
-\item \code{plot.evol} If TRUE, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
-\item \code{plot.png} If TRUE, saves the figures in .png.
+\item \code{plot.graph} If 1, generates the figures with the actual and estimated graphs,
+\item \code{plot.evol} If 1, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
+\item \code{plot.png} If 1, saves the figures in .png.
 }}
 }
 \value{
@@ -37,7 +34,7 @@ graph with the true one (if known and provided).
 If specified (\code{plot.graph}, \code{plot.evol}), the user can plot both the estimated graph
 and the true DAG (if known and provided) and the evolution of the algorithm. This generates three figures:
 the first one represents the evolution of the fitness value (best fitness in red, averaged population fitness and quantiles across the iterations),
-the second onen, the evolution of the Shannon entropy of each node across the iterations, the third one, the best node ordering (permutation that minimizes the fitness) across the iterations.
+the second one, the evolution of the Shannon entropy of each node across the iterations, the third one, the best node ordering (permutation that minimizes the fitness) across the iterations.
 }
 \examples{
  #############################################################
@@ -69,28 +66,31 @@ the second onen, the evolution of the Shannon entropy of each node across the it
  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,return.level=1)
 
  # print the evolution of the algorithm
- plot.evol <- TRUE
+ plot.evol <- 1
  GADAG_analysis <- GADAG_Analyze(GADAG_results, G=toy_data$G, X=toy_data$X,
-          plot.control = list(plot.evol=TRUE))
+          plot.control = list(plot.evol=1))
 
  # in addition, print the estimated and the true graph
- plot.graph <- TRUE
+ plot.graph <- 1
  GADAG_analysis <- GADAG_Analyze(GADAG_results, G=toy_data$G, X=toy_data$X,
           plot.control = list(plot.evol=plot.evol, plot.graph= plot.graph))
 
  # now save the results in .png, but only for the graphs
- plot.png <- TRUE
+ plot.png <- 1
  GADAG_analysis <- GADAG_Analyze(GADAG_results, G=toy_data$G, X=toy_data$X,
           plot.control = list(plot.graph= plot.graph, plot.png = plot.png))
 
  # in case you don't know the true DAG, you can't really know how good the
  # estimation is. You can't compute the precision, recall, MSE but you can
  # still plot the estimated graph and see the evolution of the algorithm
- plot.graph <- plot.evol <- TRUE
- plot.png <- FALSE
+ plot.graph <- plot.evol <- 1
+ plot.png <- 0
  GADAG_analysis <- GADAG_Analyze(GADAG_results, X=toy_data$X,
           plot.control = list(plot.graph= plot.graph, plot.evol = plot.evol))
  }
+}
+\seealso{
+\code{\link{GADAG}}, \code{\link{GADAG_CV}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
 }
 \author{
 \packageAuthor{GADAG}

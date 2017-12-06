@@ -36,8 +36,8 @@
 }
 \keyword{Directed Acyclic Graphs - Convex program - Optimization}
 \references{
-M. Champion, V. Picheny, M. Vignes (2017), Inferring large graphs using l-1 penalized likelihood,
-\link{https://arxiv.org/pdf/1507.02018.pdf}. \cr \cr
+M. Champion, V. Picheny, M. Vignes, Inferring large graphs using l-1 penalized likelihood,
+Statistics and Computing (2017). \cr \cr
 }
 \examples{
   #############################################################

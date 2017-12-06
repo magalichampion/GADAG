@@ -1,3 +1,6 @@
+#########################################
+### Main code for running GADAG
+##
 ##' @title Run GADAG
 ##' @description Function to run GADAG, an algorithm that aims at inferring large sparse directed acyclic graphs
 ##' based on an observation sample X, by minimizing the penalized negative log-likelihood with a convex program embedded in a genetic algorithm.
@@ -52,12 +55,12 @@
 ##' \item{\code{fp90.evol}}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
 ##' \item{\code{Shannon.evol}}{ Evolution of the Shannon entropy of the population across the iterations (if return.level=1).}
 ##' }
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_CV}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
 ##' @author \packageAuthor{GADAG}
 ##'
 ##'@references
 ##' M. Champion, V. Picheny, M. Vignes (2017), Inferring large graphs using l-1 penalized likelihood,
-##' \link{https://arxiv.org/pdf/1507.02018.pdf}. \cr \cr
+##' 'https://arxiv.org/pdf/1507.02018.pdf'. \cr \cr
 ##'
 ##' @examples
 ##'  #############################################################
@@ -108,11 +111,10 @@
 ##'  print(GADAG_results$f.best.evol) # this shows the evolution of the fitness
 ##'                                   # across the iterations
 ##'  }
-
 GADAG_Run <- function(X, lambda, threshold=0.1,
-        GADAG.control = list(n.gen=100, tol.Shannon=1e-6, max.eval=1e4,pop.size=10, p.xo=.25, p.mut=.05),
-        grad.control = list(tol.obj.inner=1e-6, max.ite.inner=50),
-        ncores=1,print.level=0, return.level=0) {
+                      GADAG.control = list(n.gen=250, tol.Shannon=1e-6, max.eval=1e7,pop.size=5*ncol(X), p.xo=.25, p.mut=.05),
+                      grad.control = list(tol.obj.inner=1e-6, max.ite.inner=50),
+                      ncores=1,print.level=0, return.level=0) {
 
   #############################################################
   # INPUTS:
@@ -171,18 +173,19 @@ GADAG_Run <- function(X, lambda, threshold=0.1,
     p.mut <- GADAG.control$p.mut
   }
   if (is.null(grad.control$tol.obj.inner)){
-    grad.control$tol.obj.inner <- 1e-6
+    tol.obj.inner <- 1e-6
   } else {
-    grad.control$tol.obj.inner <- grad.control$tol.obj.inner
+    tol.obj.inner <- grad.control$tol.obj.inner
   }
   if (is.null(grad.control$max.ite.inner)){
-    grad.control$max.ite.inner <- 50
+    max.ite.inner <- 50
   } else {
-    grad.control$max.ite.inner <- grad.control$max.ite.inner
+    max.ite.inner <- grad.control$max.ite.inner
   }
+  grad.control <- list(tol.obj.inner= tol.obj.inner,max.ite.inner=max.ite.inner)
 
   ##### Create and evaluate initial population #####
-  if (grad.control$max.ite.inner < 0){
+  if (max.ite.inner < 0){
     stop("grad.control$max.ite.inner should be non-negative.")
   }
 
@@ -191,7 +194,7 @@ GADAG_Run <- function(X, lambda, threshold=0.1,
   XtX <- crossprod(X)
 
   Pop       <- create.population(p, pop.size)
-  evalTandf <- evaluation(Pop, X, XtX, lambda, grad.control = grad.control, ncores=ncores)
+  evalTandf <- evaluation(Pop, X, XtX, lambda, grad.control=grad.control, ncores=ncores)
   f.pop     <- evalTandf$f
   T.pop     <- evalTandf$Tpop
   f.count   <- pop.size
@@ -299,54 +302,10 @@ GADAG_Run <- function(X, lambda, threshold=0.1,
 
   # END OF MAIN LOOP
   P <- chrom(P.best.alltimes)
+  T.best.alltimes[abs(T.best.alltimes)<threshold] <- 0
   T <- matrix(T.best.alltimes,p,p)
-  T[T<threshold] <- 0
+#  T[abs(T)<threshold] <- 0
   G.best <- P %*% T %*% t(P)
-  Gbest.bin <- G.best*0
-  Gbest.bin[(abs(G.best)>0)] <- 1
-
-  ###############################################################
-  ###############################################################
-  #if (plot.level > 0 && return.level>0){
-  #highlight.node <- c(1,2,3,4,5,6)
-  #col <- rep("black", p)
-  #col[highlight.node] <- c("blue","cyan","green", "magenta", "red", "grey")
-  #lwd <- rep(1, p)
-  #lwd[highlight.node] <- 2
-  #lwd[1] <- 3
-  #lty <- rep(1, p)
-  #lty[1:6] <- 1:6
-
-  # Fpop, min, mean and quantiles
-  #ylim=c(min(c(fmin, GAresults$fmin.pop.save)), max(GAresults$fp90.pop.save))
-  #plot(GAresults$f.best.evol, type="l", main="Cost function", xlab="generation #", ylab="-logLikelihood", lwd=2, col="red",
-  #     ylim=ylim)
-  #polygon(x=c(1:length(GAresults$fp10.pop.save),rev(1:length(GAresults$fp10.pop.save))), y=c(GAresults$fp10.pop.save, rev(GAresults$fp90.pop.save)), border=NA,col="lightgrey")
-  #lines(GAresults$fp10.pop.save)
-  #lines(GAresults$fp90.pop.save)
-  #legend(x=n.gen/2, y=max(ylim), legend=c("Current best", "Population"), col=c("red","black"), lwd=c(2,1), text.width=60)
-
-  # Shannon
-  #plot(GAresults$Shannon.save[,1], type="l", main="Shannon entropy", xlab="generation #", ylab="entropy", ylim=c(0, max(GAresults$Shannon.save)),
-  #     col=col[1], lwd=lwd[1], lty=lty[1])
-  #for (i in 2:p) lines(GAresults$Shannon.save[,i], col=col[i], lwd=lwd[i], lty=lty[i])
-
-  # Nodes paths - bestever
-  #A <- which(GAresults$P.best.evol==1, arr.ind=T)
-  #a <- sort(A[,1], index.return=TRUE)$ix
-  #plot(A[a,1], A[a,2], ylim=c(0,p), type="l", main="Best permutation", xlab="generation #", ylab="Node path", col=col[1], lwd=lwd[1], lty=lty[1])
-
-  #for (i in 2:6){
-  #  A <- which(GAresults$P.best.evol==i, arr.ind=T)
-  #  a <- sort(A[,1], index.return=TRUE)$ix
-  #  lines(A[a,1], A[a,2], col=col[i], lwd=lwd[i], lty=lty[i])
-  #}
-  #legend(x=n.gen/2, y=p/2, legend=paste0("node ",1:6), lwd=lwd[1:6], lty=lty[1:6], col=col[1:6], text.width=30)
-
-#} else {
- # cat("No convergence results to plot. \n")
-#}
-#}
 
   #############################################################
   #############################################################
