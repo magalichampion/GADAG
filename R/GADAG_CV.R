@@ -203,5 +203,5 @@ GADAG_CV <- function(X, Lambdas = NULL, n.folds = 10, threshold = 0.1,
     abline(h=min(error.CV)-0.01*min(error.CV),lty=2)
     abline(v=log(lambda.1se),lty=2,col="red")
   }
-  return(list(lambda.min=lambda.min, lambda.1se = lambda.1se, nzero=nnzero, lambda=exp(lambda.log), error.CV=error.CV))
+  return(list(lambda.min=lambda.min, lambda.1se = lambda.1se, nzero=nnzero, Lambdas=exp(lambda.log), error.CV=error.CV))
 }

@@ -46,7 +46,7 @@
 ##'  toy_data <- generateToyData(n=100, p=10, edgemin=1, Cov = Sigma)
 ##'  }
 
-generateToyData <- function(n, p, edgemin=0, Cov = NULL, type="star", seed=42) {
+generateToyData <- function(n, p, edgemin=0, Cov = diag(p), type="star", seed=42) {
   #-----------------------------------------------------
   # Generates DAGs and associated data
   # The form of the DAG can be chosen between 7 alternatives (see below)
@@ -124,7 +124,7 @@ generateToyData <- function(n, p, edgemin=0, Cov = NULL, type="star", seed=42) {
   }
 
   #eps <- matrix(rnorm(n*p,mean=0,sd=1),n,p)
-  eps <- mvrnorm(n = n,mu = rep(0,p), Sigma=Sigma, empirical = TRUE)
+  eps <- mvrnorm(n = n,mu = rep(0,p), Sigma=Cov, empirical = TRUE)
   X <- eps %*% ginv(diag(1,p,p)-G)
   X = X - matrix(1,n,1) %*% colMeans(X)
   X = X / sqrt( (1/n) * matrix(1,n,1) %*% colSums(X^2))
