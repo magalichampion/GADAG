@@ -1,5 +1,5 @@
 #################################################################
-#### evaluating a solution ####test
+#### evaluating a solution ####
 ##' @title Evaluate the fitness of a population
 ##' @description Internal function of the genetic algorithm that evaluates the fitness (penalized log-likelihood) of a set (population) of permutations. It internally computes the best triangular matrix associated to each permutation of the population.
 ##' @param Pop Population of permutations from [1,p]: matrix with \code{pop.size} rows and p columns, each row corresponding to one permutation of the population.
