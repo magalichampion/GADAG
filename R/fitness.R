@@ -7,8 +7,8 @@
 ##' @param T A pxp lower-triangular matrix.
 ##' @param lambda Parameter of penalization (>0).
 ##' @return A numeric value corresponding to the fitness of the potential solution.
-##' @author \packageAuthor{GADAG}
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{evaluation}}.
+##' @author \packageAuthor{GADAG2}
+##' @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}, \code{\link{evaluation}}.
 ##' @rawNamespace export(fitness)
 ##' @examples
 ##'  #############################################################

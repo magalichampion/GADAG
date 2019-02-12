@@ -17,8 +17,8 @@
 # @description Internal function of the genetic algorithm to transform a permutation in a matrix form.
 # @param c A permutation from [1,p].
 # @return The pxp matrix of permutation associated to c.
-# @author \packageAuthor{GADAG}
-# @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+# @author \packageAuthor{GADAG2}
+# @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}.
 #
 
 chrom <- function(c){

@@ -8,8 +8,8 @@
 # @param Pop Population of permutations from [1,p] (output from create.population() function for example).
 # @param f.pop Fitness of the population of permutations ($f element from evaluation() list output).
 # @return A vector of integers between 1 and p corresponding to the elements of the population that will probably crossover.
-# @author \packageAuthor{GADAG}
-# @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+# @author \packageAuthor{GADAG2}
+# @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}.
 # @examples
 #  ########################################################
 #  # Loading toy data

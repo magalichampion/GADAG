@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // gradientdescent
 arma::mat gradientdescent(arma::mat P, int n, arma::mat XtX, float L, float lambda, int maxite, float tolobj);
-RcppExport SEXP _GADAG_gradientdescent(SEXP PSEXP, SEXP nSEXP, SEXP XtXSEXP, SEXP LSEXP, SEXP lambdaSEXP, SEXP maxiteSEXP, SEXP tolobjSEXP) {
+RcppExport SEXP _GADAG2_gradientdescent(SEXP PSEXP, SEXP nSEXP, SEXP XtXSEXP, SEXP LSEXP, SEXP lambdaSEXP, SEXP maxiteSEXP, SEXP tolobjSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,11 +25,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_GADAG_gradientdescent", (DL_FUNC) &_GADAG_gradientdescent, 7},
+    {"_GADAG2_gradientdescent", (DL_FUNC) &_GADAG2_gradientdescent, 7},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_GADAG(DllInfo *dll) {
+RcppExport void R_init_GADAG2(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

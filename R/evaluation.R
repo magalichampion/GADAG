@@ -18,13 +18,13 @@
 ##' \item{f}{ Fitness of the population.}
 ##' }
 ##' @rawNamespace export(evaluation)
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{fitness}}.
+##' @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}, \code{\link{fitness}}.
 ##' @return A list with the following elements:
 ##' \itemize{
 ##' \item{\code{Tpop}}{ Matrix with p rows and pop.size columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
 ##' \item{\code{f}}{ Fitness of the population.}
 ##' }
-##' @author \packageAuthor{GADAG}
+##' @author \packageAuthor{GADAG2}
 ##' @examples
 ##'  #############################################################
 ##'  # Loading toy data

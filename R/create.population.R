@@ -8,8 +8,8 @@
 # @param p Length of each permutation (>0), corresponding to the number of nodes of the DAG to recover for the DAG learning problem.
 # @param pop.size Length (number of permutations) of the population (>0).
 # @return A pop.size x p matrix corresponding to the population of permutations.
-# @author \packageAuthor{GADAG}
-# @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+# @author \packageAuthor{GADAG2}
+# @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}.
 # @examples
 #  ########################################################
 #  # Creating a population of permutations

@@ -1,13 +1,14 @@
-##' @title Generate toy data for running GADAG
-##' @description This function generates toy data that can be used to run GADAG: the adjacency matrix of a DAG with p nodes and the design matrix with n observations of the distribution of the p nodes.
+##' @title Generate toy data for running GADAG2
+##' @description This function generates toy data that can be used to run GADAG2: the adjacency matrix of a DAG with p nodes and the design matrix with n observations of the distribution of the p nodes.
 ##' @param n Number of samples in the design matrix.
 ##' @param p Number of nodes of the DAG.
-##' @param edgemin Minimal value for the non-null edges of the DAG (between 0 and 1).
 ##' @param Cov (optional) Covariance matrix for the noise variables (identity matrix by default)
 ##' @param type Form of the DAG. It can be chosen between 7 alternatives: \code{"star"}, \code{"bistar"}, \code{"full"}, \code{"path"}, \code{"quadristar"}, \code{"sixstar"} (see details below).
+##' @param edgemin Minimal value for the non-null edges of the DAG (between 0 and 1).
 ##' @param seed Fix the seed.
+##' @rawNamespace export(generateToyData)
 ##' @return A list containing the design nxp matrix X (with samples in rows and variables in columns) and the adjacency matrix G associated to the DAG with p nodes.
-##' @author \packageAuthor{GADAG}.
+##' @author \packageAuthor{GADAG2}.
 ##' @details One of the following seven alternatives can be chosen for the DAG form:
 ##' \itemize{
 ##' \item{\code{"star"}}{ star-shaped DAG (all active edges start from node 1),}
@@ -17,7 +18,7 @@
 ##' \item{\code{"quadristar"}}{ node 1 is connected to nodes 2 to 4, each being connected to 1/3 of the rest of the nodes,}
 ##' \item{\code{"sixstar"}}{ same as \code{"quadristar"}, with 6 nodes.}
 ##' }
-##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+##' @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}.
 ##' @examples
 ##'  #############################################################
 ##'  # Generating toy data
@@ -74,7 +75,7 @@ generateToyData <- function(n, p, edgemin=0, Cov = diag(p), type="star", seed=42
   }
 
   if (n==1){
-    stop("You need more than one sample to run GADAG.")
+    stop("You need more than one sample to run GADAG2.")
   }
 
   if (edgemin >1 || edgemin < 0){

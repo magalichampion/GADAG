@@ -53,8 +53,8 @@ Internal function of the genetic algorithm that evaluates the fitness (penalized
  print(Fitness) # here is the fitness of the candidate solution (P,T)
 }
 \seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{evaluation}}.
+\code{\link{GADAG2}}, \code{\link{GADAG2_Run}}, \code{\link{evaluation}}.
 }
 \author{
-\packageAuthor{GADAG}
+\packageAuthor{GADAG2}
 }

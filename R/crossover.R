@@ -11,8 +11,8 @@
 # \item{Children}{ Population of permutations created after crossovering permutations of Pop.}
 # \item{I.cross}{ Vector of integers from [1,p] corresponding to the elements of Pop that have a non-zero probability for crossovering.}
 # }
-# @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
-# @author \packageAuthor{GADAG}
+# @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}.
+# @author \packageAuthor{GADAG2}
 # @examples
 #  ########################################################
 #  # Creating a population of permutations

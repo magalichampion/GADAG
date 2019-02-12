@@ -4,8 +4,8 @@
 \alias{evaluation}
 \title{Evaluate the fitness of a population}
 \usage{
-evaluation(Pop, X, XtX = NULL, lambda, grad.control = list(tol.obj = 1e-06,
-  max.ite = 50), ncores = 1)
+evaluation(Pop, X, XtX = NULL, lambda, grad.control = list(tol.obj =
+  1e-06, max.ite = 50), ncores = 1)
 }
 \arguments{
 \item{Pop}{Population of permutations from [1,p]: matrix with \code{pop.size} rows and p columns, each row corresponding to one permutation of the population.}
@@ -78,8 +78,8 @@ Internal function of the genetic algorithm that evaluates the fitness (penalized
  T <- matrix(Evaluation$Tpop,p,p)
 }
 \seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{fitness}}.
+\code{\link{GADAG2}}, \code{\link{GADAG2_Run}}, \code{\link{fitness}}.
 }
 \author{
-\packageAuthor{GADAG}
+\packageAuthor{GADAG2}
 }

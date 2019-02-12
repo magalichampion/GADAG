@@ -2,9 +2,10 @@
 % Please edit documentation in R/generateToyData.R
 \name{generateToyData}
 \alias{generateToyData}
-\title{Generate toy data for running GADAG}
+\title{Generate toy data for running GADAG2}
 \usage{
-generateToyData(n, p, edgemin = 0, type = "star", seed = 42)
+generateToyData(n, p, edgemin = 0, Cov = diag(p), type = "star",
+  seed = 42)
 }
 \arguments{
 \item{n}{Number of samples in the design matrix.}
@@ -12,6 +13,8 @@ generateToyData(n, p, edgemin = 0, type = "star", seed = 42)
 \item{p}{Number of nodes of the DAG.}
 
 \item{edgemin}{Minimal value for the non-null edges of the DAG (between 0 and 1).}
+
+\item{Cov}{(optional) Covariance matrix for the noise variables (identity matrix by default)}
 
 \item{type}{Form of the DAG. It can be chosen between 7 alternatives: \code{"star"}, \code{"bistar"}, \code{"full"}, \code{"path"}, \code{"quadristar"}, \code{"sixstar"} (see details below).}
 
@@ -21,7 +24,7 @@ generateToyData(n, p, edgemin = 0, type = "star", seed = 42)
 A list containing the design nxp matrix X (with samples in rows and variables in columns) and the adjacency matrix G associated to the DAG with p nodes.
 }
 \description{
-This function generates toy data that can be used to run GADAG: the adjacency matrix of a DAG with p nodes and the design matrix with n observations of the distribution of the p nodes.
+This function generates toy data that can be used to run GADAG2: the adjacency matrix of a DAG with p nodes and the design matrix with n observations of the distribution of the p nodes.
 }
 \details{
 One of the following seven alternatives can be chosen for the DAG form:
@@ -54,10 +57,17 @@ One of the following seven alternatives can be chosen for the DAG form:
  # set the minimal edge value to 1
  toy_data <- generateToyData(n=100, p=10, edgemin=1) # all edges are set to 1
  }
+
+ \dontrun{
+ # non-independent noises
+ A <- matrix(runif(10^2)*2-1, ncol=10)
+ Sigma <- t(A) \%*\% A
+ toy_data <- generateToyData(n=100, p=10, edgemin=1, Cov = Sigma)
+ }
 }
 \seealso{
-\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+\code{\link{GADAG2}}, \code{\link{GADAG2_Run}}.
 }
 \author{
-\packageAuthor{GADAG}.
+\packageAuthor{GADAG2}.
 }

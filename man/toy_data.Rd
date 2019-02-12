@@ -2,10 +2,10 @@
 \alias{toy_data}
 \docType{data}
 \title{
-  Toy data for running GADAG
+  Toy data for running GADAG2
 }
 \description{
-  An example of data for running GADAG.
+  An example of data for running GADAG2.
 }
 \usage{toy_data}
 \format{

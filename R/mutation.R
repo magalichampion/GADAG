@@ -7,8 +7,8 @@
 # @param Pop Population of permutations from [1,p] (output from create.population() function for example).
 # @param p.mut Mutation probability.
 # @return Population of permutations created after mutating permutations of Pop.
-# @author \packageAuthor{GADAG}
-# @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+# @author \packageAuthor{GADAG2}
+# @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}.
 # @examples
 #  ########################################################
 #  # Creating a population of permutations
