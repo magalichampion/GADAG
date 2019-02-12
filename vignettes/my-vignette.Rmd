@@ -1,0 +1,172 @@
+---
+title: "A Genetic Algorithm for learning Directed Acyclic Graphs"
+author: "Magali Champion, Victor Picheny and Matthieu Vignes"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette comes with the GADAG R-package. It can be used either to get some additional information about the model and methods or to get examples of how to use the functions.
+
+## Introduction
+The GADAG R-package aims at learning sparse large Directed Acyclic Graphs (DAGs) from observational data. The particularity of this algorithm is that it separates the exploration of the set of DAGs into two easier sub-searches: order of the nodes of the graph, modelled as a permutation, and graph structure, modelled as a lower triangular matrix.
+It is thus encoded as a combination of a convex program and a tailored genetic algorithm.
+Typically, the DAG we aim at recovering is a Gene Regulatory Network, which nodes are genes and edges represent regulations between genes. In this case, observational data are gene expression.
+
+The package can be tested on the provided data `toy_data`. This small dataset contains two variables: a "star" DAG $\mathcal{G}$ with 10 nodes, defined by its adjacency matrix $G$ (node 1 activates all other 9 nodes) and a design matrix $X$ with 100 observations of the distribution of the 10 nodes.
+
+```{r include = FALSE}
+library(igraph)
+library(MASS)
+library(cvTools)
+library(lattice)
+```
+
+```{r}
+library(GADAG2)
+data(toy_data)
+# This is the design matrix
+dim(toy_data$X)
+# This is the adjacency matrix of the graph
+dim(toy_data$G)
+```
+
+## Quick user guide
+
+Here are the main functions of GADAG
+
+1. Define the optimal penalty term (number of edges of the graph) by cross validation
+
+```{r, eval=FALSE}
+GADAG2_CV_results <- GADAG2_CV(X=toy_data$X)
+```
+
+2. Reconstruct the DAG using the optimal lambda
+
+```{r eval=FALSE}
+GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=GADAG2_CV_results$lambda.1se)
+```
+
+3. Analyse the results of GADAG
+```{r eval=FALSE}
+GADAG2_results <- GADAG2_Analyze(GADAG2_results, G=toy_data$G, X=toy_data$X)
+```
+
+## Inference of large sparse directed acyclic graphs
+The inference algorithm implemented in the package is based on the minimization of the penalized negative log-likelihood of the model. To produce sparse graphs (with a limited number of edges), the optimization problem to solve is penalized using a $l_1$-penalty, controlled by a parameter `lambda`, to be defined.
+Here, the main issue consists in exploring the set of DAGs, which can be extremly large (exponentially increasing with the number of nodes), and which is not convex. To avoid its whole exploration, a DAG is modelled as a combination of a permutation, which controls the nodes ordering, and a lower triangular matrix, which controls the graph structure. GADAG then works as follows:
+
+1. it looks for the best permutation using a genetic algorithm (outer loop)
+
+2. it computes the best lower triangular matrix associated to each visited permutation using a gradient descent approach (inner loop)
+
+The minimal inputs for running GADAG are:
+
+- a design matrix $X$, with samples $n$ in rows and variables $p$ in columns
+
+- a non-negative parameter of penalization `lambda`, which control the number of edges of the inferred graph
+
+```{r}
+# An example of how to infer a DAG
+GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1)
+GADAG2_results$G.best # inferred DAG in a matrix form
+```
+
+Internal parameters can be specified to refine the algorithm, such that `GADAG.control` and `grad.control`, which mainly control the convergence of the genetic algorithm and the inner convex program. However, it makes the algorithm slower.
+
+```{r eval=FALSE}
+# An example of how to infer a DAG, with refinments
+n.gen <- 1e10 # we allow a very large number of iterations
+max.eval <- 1e10 # maximal number of nested evaluations
+GADAG2_results <- GADAG2_Run(X=toy_data$X,lambda=0.1,
+                             GADAG.control=list(n.gen=n.gen,max.eval=max.eval))
+print(GADAG_results$G.best) # inferred DAG in a matrix form
+```
+
+For each potential solution, in the form of a permutation matrix and a lower triangular matrix, its fitness (penalized likelihood) can be computed and then compared to another solution. This function is highly internally used.
+
+```{r}
+p=10
+Perm <- sample(p) # permutation in a vector form
+P <- matrix(0,p,p)
+P[p*0:(p-1) + Perm] <- 1 # Perm is tranformed into a matrix form
+T <- matrix(rnorm(p),p,p)
+T[upper.tri(T,diag=TRUE)]<-0
+
+Fitness <- fitness(P=P, X=toy_data$X, T=T, lambda=0.1)
+print(Fitness) # here is the fitness of the candidate solution (P,T)
+```
+
+
+## Cross-validation for defining the optimal parameter of penalization
+Instead of setting the parameter of penalization `lambda` to a predefined value, GADAG includes a function that runs `k`-fold cross-validation to optimally tune it.
+The usage of the fonction `GADAG2_CV` is exactly the same as `GADAG2_Run`. Given an optional sequence of `lambdas`, data are split into `k` groups. The `k-1` first groups are iteratively used as training set for running `GADAG2_Run` with each of the `lambdas`, whereas the last group is used to test the performances. 
+The best `lambda`, in the sense that it minimizes the mean squared error ($\pm$ 1\%) is returned.
+
+
+```{r eval=FALSE}
+# optimally tune the parameter of penalization
+GADAG2_CV_results <- GADAG2_CV(X=toy_data$X)
+print(GADAG2_CV_results$lambda.1se) # best lambda
+```
+
+In addition, the averaged cross validation error given sequence of lambdas can be plotted with the `plot.CV` argument.
+
+```{r eval=FALSE}
+GADAG2_CV_results <- GADAG2_CV(X=toy_data$X,plot.CV=1) # plot the results
+```
+
+```{r pressure, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("erreurCV.eps")
+```
+
+## Analysis of the results
+The goal of the GADAG R-package is to infer a DAG that explains how the nodes are connected to each other. If the true DAG is known, the `GADAG2_Analyse` function offers the possibility to compute classical graph performances:
+
+- TP: number of true positives, inferred edges that are in the true DAG
+
+- FP: number of false positives, inferred edges by mistake
+
+- FN: number of false negatives, forgotten edges
+
+- TN: number of true negatives, not inferred edges that are not in the true DAG
+
+- precision = $\frac{TP}{TP+FP}$
+
+- recall = $\frac{TP}{TP+FN}$
+
+```{r}
+# Run the main code
+GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1)
+
+# Analyze the results
+GADAG2_analysis <- GADAG2_Analyze(GADAG2_results, G=toy_data$G, X=toy_data$X)
+print(GADAG2_analysis) # here are the results
+```
+
+In addition, graphs (estimated and true graph) can be plotted and the evolution of the algorithm can be represented using various graphical representations.
+
+```{r fig.width = 6, fig.height=4}
+# Plot the graphs
+plot.graph <- 1
+GADAG2_analysis <- GADAG2_Analyze(GADAG2_results, G=toy_data$G, X=toy_data$X,
+           plot.control = list(plot.graph= plot.graph))
+
+# run GADAG2 with return.level set to 1 beforehand
+GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1,return.level=1)
+
+# Plot the evolution of the algorithm
+plot.evol <- 1
+GADAG2_analysis <- GADAG2_Analyze(GADAG2_results, G=toy_data$G, X=toy_data$X,
+           plot.control = list(plot.evol=1))
+```
