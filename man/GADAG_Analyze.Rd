@@ -20,10 +20,10 @@ GADAG_Analyze(
 \item{X}{(optional) Design matrix with samples (n) in rows and variables (p) in columns.}
 
 \item{plot.control}{A list containing parameters to control the produced graph outputs (\code{return.level} has to be turned to 1 in the main code beforehand):
-\itemize{
-\item \code{plot.graph} If 1, generates the figures with the actual and estimated graphs,
-\item \code{plot.evol} If 1, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
-\item \code{plot.png} If 1, saves the figures in .png.
+\describe{
+\item{\code{plot.graph}}{If 1, generates the figures with the actual and estimated graphs,}
+\item{\code{plot.evol}}{If 1, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),}
+\item{\code{plot.png}}{If 1, saves the figures in .png.}
 }}
 
 \item{Nodes}{(optional) If plot.evol is turned on, specifies the evolution of which nodes you want to highlight.}

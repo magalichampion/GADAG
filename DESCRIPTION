@@ -3,8 +3,11 @@ Type: Package
 Title: A Genetic Algorithm for learning Directed Acyclic Graphs
 Version: 0.99.1
 Date: 2017-09-12
-Author: Magali Champion, Victor Picheny and Matthieu Vignes
-Maintainer: Magali Champion <magali.champion@parisdescartes.fr>
+Authors@R: c(
+    person(given = "Magali", family = "Champion", role = c("aut", "cre"), email = "magali.champion@u-paris.fr"),
+    person(given = "Victor", family = "Picheny", role = "aut"),
+    person(given = "Matthieu", family = "Vignes", role = "aut")
+  )
 Description: GADAG aims at learning sparse large Directed Acyclic Graphs with a combination of a convex program and a tailored genetic algorithm.
 License: GPL-2
 Encoding: UTF-8
@@ -18,3 +21,4 @@ LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
 Packaged: 2017-09-12 14:56:12 UTC; magali
 RoxygenNote: 7.3.3
+LazyData: true

@@ -7,10 +7,11 @@
 # @param Pop Population of permutations from [1,p] (output from create.population() function for example).
 # @param p.xo Crossover probability.
 # @return A list with the following elements:
-# \itemize{
+# \describe{
 # \item{Children}{ Population of permutations created after crossovering permutations of Pop.}
 # \item{I.cross}{ Vector of integers from [1,p] corresponding to the elements of Pop that have a non-zero probability for crossovering.}
 # }
+##' @importFrom stats runif
 # @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 # @author \packageAuthor{GADAG}
 # @examples

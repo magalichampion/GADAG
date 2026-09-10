@@ -9,7 +9,7 @@
 ##' @param threshold Thresholding value for the estimated edges.
 ##' @param GADAG.control A list containing parameters for controlling GADAG (termination conditions and inherent parameters of the Genetic Algortihm).
 ##' Some parameters (n.gen, max.eval and pop.size) are particularly critical for reducing the computational time.
-##' \itemize{
+##' \describe{
 ##' \item{\code{n.gen}}{ maximal number of population generations (>0),}
 ##' \item{\code{pop.size}}{ initial population size for the genetic algorithm (>0),}
 ##' \item{\code{max.eval}}{ overall maximal number of calls of the evaluation function (>0, should be of the order of \code{n.gen}*\code{pop.size}),}
@@ -25,15 +25,16 @@
 ##' @rawNamespace import(cvTools)
 ##' @rawNamespace importFrom(Rcpp, evalCpp)
 ##' @rawNamespace useDynLib(GADAG)
+##' @importFrom graphics abline
 ##' @param grad.control A list containing the parameters for controlling the inner optimization, i.e. the gradient descent.
-##' \itemize{
+##' \describe{
 ##' \item{\code{tol.obj.inner}}{ tolerance (>0),}
 ##' \item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 ##' }
 ##' @param ncores Number of cores (>0, depending on your computer).
 ##' @param plot.CV If 1, plots the averaged cross validation error given sequence of lambdas.
 ##' @return A list with the following elements:
-##' \itemize{
+##' \describe{
 ##' \item{\code{lambda.min}}{ Value of \code{lambda} that minimizes the averaged cross validation error \code{error.CV}.}
 ##' \item{\code{lambda.1se}}{ Largest value of \code{lambda} such that \code{error.CV} is within 1 \% of the minimum.}
 ##' \item{\code{nzero}}{ Number of non-zero coefficients at each \code{lambda}.}

@@ -23,7 +23,7 @@ evaluation(
 \item{lambda}{Parameter of penalization (>0).}
 
 \item{grad.control}{A list containing the parameters for controlling the inner optimization, i.e. the gradient descent
-\itemize{
+\describe{
 \item{\code{tol.obj.inner}}{ tolerance (>0),}
 \item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 }}
@@ -32,13 +32,11 @@ evaluation(
 }
 \value{
 A list with the following elements:
-\itemize{
 \item{Tpop}{ Matrix with pxp columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
 \item{f}{ Fitness of the population.}
-}
 
 A list with the following elements:
-\itemize{
+\describe{
 \item{\code{Tpop}}{ Matrix with p rows and pop.size columns, each column corresponding to the best triangular matrix (in a vector form) associated to each permutation of the population.}
 \item{\code{f}}{ Fitness of the population.}
 }

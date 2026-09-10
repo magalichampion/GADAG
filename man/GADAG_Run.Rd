@@ -25,7 +25,7 @@ GADAG_Run(
 
 \item{GADAG.control}{A list containing parameters for controlling GADAG (termination conditions and inherent parameters of the Genetic Algortihm).
 Some parameters (n.gen, max.eval and pop.size) are particularly critical for reducing the computational time.
-\itemize{
+\describe{
 \item{\code{n.gen}}{ maximal number of population generations (>0),}
 \item{\code{pop.size}}{ initial population size for the genetic algorithm (>0),}
 \item{\code{max.eval}}{ overall maximal number of calls of the evaluation function (>0, should be of the order of \code{n.gen}*\code{pop.size}),}
@@ -35,7 +35,7 @@ Some parameters (n.gen, max.eval and pop.size) are particularly critical for red
 }}
 
 \item{grad.control}{A list containing the parameters for controlling the inner optimization, i.e. the gradient descent.
-\itemize{
+\describe{
 \item{\code{tol.obj.inner}}{ tolerance (>0),}
 \item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 }}
@@ -48,7 +48,6 @@ Some parameters (n.gen, max.eval and pop.size) are particularly critical for red
 }
 \value{
 A list with the following elements:
-\itemize{
 \item{\code{f.best}}{ Best fitness value.}
 \item{\code{P.best}}{ Best node order (vector of length p).}
 \item{\code{T.best}}{ Corresponding best edges values (vector of length p).}
@@ -61,7 +60,6 @@ A list with the following elements:
 \item{\code{fp10.evol}}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
 \item{\code{fp90.evol}}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
 \item{\code{Shannon.evol}}{ Evolution of the Shannon entropy of the population across the iterations (if return.level=1).}
-}
 }
 \description{
 Function to run GADAG, an algorithm that aims at inferring large sparse directed acyclic graphs

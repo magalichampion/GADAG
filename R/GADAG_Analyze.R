@@ -4,10 +4,10 @@
 ##' @param G (optional) Adjacency matrix corresponding to the true DAG (pxp matrix).
 ##' @param X (optional) Design matrix with samples (n) in rows and variables (p) in columns.
 ##' @param plot.control A list containing parameters to control the produced graph outputs (\code{return.level} has to be turned to 1 in the main code beforehand):
-##' \itemize{
-##' \item \code{plot.graph} If 1, generates the figures with the actual and estimated graphs,
-##' \item \code{plot.evol} If 1, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),
-##' \item \code{plot.png} If 1, saves the figures in .png.
+##' \describe{
+##' \item{\code{plot.graph}}{If 1, generates the figures with the actual and estimated graphs,}
+##' \item{\code{plot.evol}}{If 1, generates the figures showing the evolution of the genetic algorithm (fitness value, Shannon entropy and best node ordering),}
+##' \item{\code{plot.png}}{If 1, saves the figures in .png.}
 ##' }
 ##' @param Nodes (optional) If plot.evol is turned on, specifies the evolution of which nodes you want to highlight.
 ##' @rawNamespace export(GADAG_Analyze)
@@ -21,7 +21,8 @@
 ##' the first one represents the evolution of the fitness value (best fitness in red, averaged population fitness and quantiles across the iterations),
 ##' the second one, the evolution of the Shannon entropy of each node across the iterations, the third one, the best node ordering (permutation that minimizes the fitness) across the iterations.
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_CV}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
-##'
+##' @importFrom grDevices dev.off png rainbow
+##' @importFrom graphics legend lines par polygon
 ##' @examples
 ##'  #############################################################
 ##'  # Loading toy data

@@ -9,6 +9,7 @@
 # @return Population of permutations created after mutating permutations of Pop.
 # @author \packageAuthor{GADAG}
 # @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}.
+##' @importFrom stats runif
 # @examples
 #  ########################################################
 #  # Creating a population of permutations

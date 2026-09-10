@@ -17,7 +17,7 @@
 ##' @param threshold Thresholding value for the estimated edges.
 ##' @param GADAG.control A list containing parameters for controlling GADAG (termination conditions and inherent parameters of the Genetic Algortihm).
 ##' Some parameters (n.gen, max.eval and pop.size) are particularly critical for reducing the computational time.
-##' \itemize{
+##' \describe{
 ##' \item{\code{n.gen}}{ maximal number of population generations (>0),}
 ##' \item{\code{pop.size}}{ initial population size for the genetic algorithm (>0),}
 ##' \item{\code{max.eval}}{ overall maximal number of calls of the evaluation function (>0, should be of the order of \code{n.gen}*\code{pop.size}),}
@@ -32,8 +32,9 @@
 ##' @rawNamespace import(parallel)
 ##' @rawNamespace importFrom(Rcpp, evalCpp)
 ##' @rawNamespace useDynLib(GADAG)
+##' @importFrom stats quantile sd
 ##' @param grad.control A list containing the parameters for controlling the inner optimization, i.e. the gradient descent.
-##' \itemize{
+##' \describe{
 ##' \item{\code{tol.obj.inner}}{ tolerance (>0),}
 ##' \item{\code{max.ite.inner}}{ maximum number of iterations (>0).}
 ##' }
@@ -41,7 +42,6 @@
 ##' @param print.level 0 no print, 1 some info on the genetic algorithm behaviour are printed.
 ##' @param return.level 0 only best solution is returned, 1 evolution of the current best solution and statistics on the population fitness values are also returned.
 ##' @return A list with the following elements:
-##' \itemize{
 ##' \item{\code{f.best}}{ Best fitness value.}
 ##' \item{\code{P.best}}{ Best node order (vector of length p).}
 ##' \item{\code{T.best}}{ Corresponding best edges values (vector of length p).}
@@ -54,7 +54,6 @@
 ##' \item{\code{fp10.evol}}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
 ##' \item{\code{fp90.evol}}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
 ##' \item{\code{Shannon.evol}}{ Evolution of the Shannon entropy of the population across the iterations (if return.level=1).}
-##' }
 ##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_CV}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
 ##' @author \packageAuthor{GADAG}
 ##'

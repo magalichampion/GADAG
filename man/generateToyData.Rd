@@ -27,7 +27,7 @@ This function generates toy data that can be used to run GADAG: the adjacency ma
 }
 \details{
 One of the following seven alternatives can be chosen for the DAG form:
-\itemize{
+\describe{
 \item{\code{"star"}}{ star-shaped DAG (all active edges start from node 1),}
 \item{\code{"bistar"}}{ half of the edges start from node 1 and the other half from node 2,}
 \item{\code{"full"}}{ full DAG (all the edges are active),}

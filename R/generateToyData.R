@@ -7,10 +7,11 @@
 ##' @param edgemin Minimal value for the non-null edges of the DAG (between 0 and 1).
 ##' @param seed Fix the seed.
 ##' @rawNamespace export(generateToyData)
+##' @importFrom stats runif
 ##' @return A list containing the design nxp matrix X (with samples in rows and variables in columns) and the adjacency matrix G associated to the DAG with p nodes.
 ##' @author \packageAuthor{GADAG}.
 ##' @details One of the following seven alternatives can be chosen for the DAG form:
-##' \itemize{
+##' \describe{
 ##' \item{\code{"star"}}{ star-shaped DAG (all active edges start from node 1),}
 ##' \item{\code{"bistar"}}{ half of the edges start from node 1 and the other half from node 2,}
 ##' \item{\code{"full"}}{ full DAG (all the edges are active),}
