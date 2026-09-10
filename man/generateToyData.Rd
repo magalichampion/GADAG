@@ -2,10 +2,9 @@
 % Please edit documentation in R/generateToyData.R
 \name{generateToyData}
 \alias{generateToyData}
-\title{Generate toy data for running GADAG2}
+\title{Generate toy data for running GADAG}
 \usage{
-generateToyData(n, p, edgemin = 0, Cov = diag(p), type = "star",
-  seed = 42)
+generateToyData(n, p, edgemin = 0, Cov = diag(p), type = "star", seed = 42)
 }
 \arguments{
 \item{n}{Number of samples in the design matrix.}
@@ -24,7 +23,7 @@ generateToyData(n, p, edgemin = 0, Cov = diag(p), type = "star",
 A list containing the design nxp matrix X (with samples in rows and variables in columns) and the adjacency matrix G associated to the DAG with p nodes.
 }
 \description{
-This function generates toy data that can be used to run GADAG2: the adjacency matrix of a DAG with p nodes and the design matrix with n observations of the distribution of the p nodes.
+This function generates toy data that can be used to run GADAG: the adjacency matrix of a DAG with p nodes and the design matrix with n observations of the distribution of the p nodes.
 }
 \details{
 One of the following seven alternatives can be chosen for the DAG form:
@@ -66,8 +65,8 @@ One of the following seven alternatives can be chosen for the DAG form:
  }
 }
 \seealso{
-\code{\link{GADAG2}}, \code{\link{GADAG2_Run}}.
+\code{\link{GADAG}}, \code{\link{GADAG_Run}}.
 }
 \author{
-\packageAuthor{GADAG2}.
+\packageAuthor{GADAG}.
 }
