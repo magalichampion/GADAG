@@ -2,7 +2,7 @@ Package: GADAG
 Type: Package
 Title: A Genetic Algorithm for learning Directed Acyclic Graphs
 Version: 0.99.1
-Date: 2017-09-12
+Date: 2026-09-10
 Authors@R: c(
     person(given = "Magali", family = "Champion", role = c("aut", "cre"), email = "magali.champion@u-paris.fr"),
     person(given = "Victor", family = "Picheny", role = "aut"),
