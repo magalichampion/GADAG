@@ -75,6 +75,7 @@ and \code{n.gen} between 10 to 250 times \code{pop.size}. \code{tol.Shannon} may
 parameters should only be modified with care.
 }
 \examples{
+\donttest{
  #############################################################
  # Loading toy data
  #############################################################
@@ -90,6 +91,7 @@ parameters should only be modified with care.
  # Simple run, with only the penalty term specified
  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
  print(GADAG_results$G.best) # optimal adjacency matrix graph
+ }
 
  # Expensive run with many evaluations if we refine the
  # termination conditions

@@ -62,6 +62,7 @@
 ##' 'https://arxiv.org/pdf/1507.02018.pdf'. \cr \cr
 ##'
 ##' @examples
+##' \donttest{
 ##'  #############################################################
 ##'  # Loading toy data
 ##'  #############################################################
@@ -77,6 +78,7 @@
 ##'  # Simple run, with only the penalty term specified
 ##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
 ##'  print(GADAG_results$G.best) # optimal adjacency matrix graph
+##'  }
 ##'
 ##'  # Expensive run with many evaluations if we refine the
 ##'  # termination conditions

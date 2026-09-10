@@ -24,6 +24,7 @@
 ##' @importFrom grDevices dev.off png rainbow
 ##' @importFrom graphics legend lines par polygon
 ##' @examples
+##' \donttest{
 ##'  #############################################################
 ##'  # Loading toy data
 ##'  #############################################################
@@ -46,6 +47,7 @@
 ##'  # analyze the results
 ##'  GADAG_analysis <- GADAG_Analyze(GADAG_results, G=toy_data$G, X=toy_data$X)
 ##'  print(GADAG_analysis) # here are the results
+##' }
 ##'
 ##'  # more complex run, where you want to have some details about the procedure
 ##'  \dontrun{

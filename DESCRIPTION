@@ -1,6 +1,6 @@
 Package: GADAG
 Type: Package
-Title: A Genetic Algorithm for learning Directed Acyclic Graphs
+Title: A Genetic Algorithm for Learning Directed Acyclic Graphs
 Version: 0.99.1
 Date: 2026-09-10
 Authors@R: c(
@@ -8,7 +8,7 @@ Authors@R: c(
     person(given = "Victor", family = "Picheny", role = "aut"),
     person(given = "Matthieu", family = "Vignes", role = "aut")
   )
-Description: GADAG aims at learning sparse large Directed Acyclic Graphs with a combination of a convex program and a tailored genetic algorithm.
+Description: Learns sparse large Directed Acyclic Graphs with a combination of a convex program and a tailored genetic algorithm.
 License: GPL-2
 Encoding: UTF-8
 Depends:
