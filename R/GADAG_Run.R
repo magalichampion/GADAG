@@ -1,8 +1,8 @@
 #########################################
-### Main code for running GADAG2
+### Main code for running GADAG
 ##
-##' @title Run GADAG2
-##' @description Function to run GADAG2, an algorithm that aims at inferring large sparse directed acyclic graphs
+##' @title Run GADAG
+##' @description Function to run GADAG, an algorithm that aims at inferring large sparse directed acyclic graphs
 ##' based on an observation sample X, by minimizing the penalized negative log-likelihood with a convex program embedded in a genetic algorithm.
 ##' @details This function returns as a primary output \code{G.best}, the adjacency matrix of the inferred graph. This matrix is computed thanks
 ##' to its decomposition (\code{P.best}, \code{T.best}).
@@ -15,7 +15,7 @@
 ##' @param X Design matrix, with samples (n) in rows and variables (p) in columns.
 ##' @param lambda Parameter of penalization (>0).
 ##' @param threshold Thresholding value for the estimated edges.
-##' @param GADAG2.control A list containing parameters for controlling GADAG2 (termination conditions and inherent parameters of the Genetic Algortihm).
+##' @param GADAG.control A list containing parameters for controlling GADAG (termination conditions and inherent parameters of the Genetic Algortihm).
 ##' Some parameters (n.gen, max.eval and pop.size) are particularly critical for reducing the computational time.
 ##' \itemize{
 ##' \item{\code{n.gen}}{ maximal number of population generations (>0),}
@@ -25,13 +25,13 @@
 ##' \item{\code{p.xo}}{ crossover probability of the genetic algorithm (between 0 and 1),}
 ##' \item{\code{p.mut}}{ mutation probability of the genetic algorithm (between 0 and 1).}
 ##' }
-##' @rawNamespace export(GADAG2_Run)
+##' @rawNamespace export(GADAG_Run)
 ##' @rawNamespace import(igraph)
 ##' @rawNamespace import(MASS)
 ##' @rawNamespace import(Rcpp)
 ##' @rawNamespace import(parallel)
 ##' @rawNamespace importFrom(Rcpp, evalCpp)
-##' @rawNamespace useDynLib(GADAG2)
+##' @rawNamespace useDynLib(GADAG)
 ##' @param grad.control A list containing the parameters for controlling the inner optimization, i.e. the gradient descent.
 ##' \itemize{
 ##' \item{\code{tol.obj.inner}}{ tolerance (>0),}
@@ -55,8 +55,8 @@
 ##' \item{\code{fp90.evol}}{ Evolution of the quantiles of the fitness value across the iterations (if return.level=1).}
 ##' \item{\code{Shannon.evol}}{ Evolution of the Shannon entropy of the population across the iterations (if return.level=1).}
 ##' }
-##' @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_CV}}, \code{\link{GADAG2_Run}}, \code{\link{GADAG2_Analyze}}.
-##' @author \packageAuthor{GADAG2}
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_CV}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
+##' @author \packageAuthor{GADAG}
 ##'
 ##'@references
 ##' M. Champion, V. Picheny, M. Vignes (2017), Inferring large graphs using l-1 penalized likelihood,
@@ -73,11 +73,11 @@
 ##'  # - toy_data$G is the 10x10 adjacency matrix (ground trough)
 ##'
 ##'  #############################################################
-##'  # Running GADAG2
+##'  # Running GADAG
 ##'  #############################################################
 ##'  # Simple run, with only the penalty term specified
-##'  GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1)
-##'  print(GADAG2_results$G.best) # optimal adjacency matrix graph
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
+##'  print(GADAG_results$G.best) # optimal adjacency matrix graph
 ##'
 ##'  # Expensive run with many evaluations if we refine the
 ##'  # termination conditions
@@ -89,30 +89,30 @@
 ##'                                 # population size
 ##'  max.eval <- n.gen * pop.size # maximal number of nested
 ##'                               # evaluation
-##'  GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1,
-##'       GADAG2.control=list(n.gen=n.gen, tol.Shannon=tol.Shannon,
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,
+##'       GADAG.control=list(n.gen=n.gen, tol.Shannon=tol.Shannon,
 ##'                          pop.size = pop.size, max.eval=max.eval))
-##'  print(GADAG2_results$G.best) # optimal adjacency matrix graph
+##'  print(GADAG_results$G.best) # optimal adjacency matrix graph
 ##'  }
 ##'
 ##'  # Expensive run if we also increase the population size
 ##'  \dontrun{
 ##'  pop.size <- 10*ncol(toy_data$G)
-##'  GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1,
-##'       GADAG2.control=list(pop.size=pop.size))
-##'  print(GADAG2_results$G.best) # optimal adjacency matrix graph
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,
+##'       GADAG.control=list(pop.size=pop.size))
+##'  print(GADAG_results$G.best) # optimal adjacency matrix graph
 ##'  }
 ##'
 ##'  # You can have more information about the evolution of the
 ##'  # algorithm by turning return.level on
 ##'  \dontrun{
 ##'  return.level <- 1
-##'  GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1, return.level = return.level)
-##'  print(GADAG2_results$f.best.evol) # this shows the evolution of the fitness
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1, return.level = return.level)
+##'  print(GADAG_results$f.best.evol) # this shows the evolution of the fitness
 ##'                                   # across the iterations
 ##'  }
-GADAG2_Run <- function(X, lambda=0.1, threshold=0.1,
-                      GADAG2.control = list(n.gen=250, tol.Shannon=1e-6, max.eval=1e7,pop.size=5*ncol(X), p.xo=.25, p.mut=.05),
+GADAG_Run <- function(X, lambda=0.1, threshold=0.1,
+                      GADAG.control = list(n.gen=250, tol.Shannon=1e-6, max.eval=1e7,pop.size=5*ncol(X), p.xo=.25, p.mut=.05),
                       grad.control = list(tol.obj.inner=1e-6, max.ite.inner=50),
                       ncores=1,print.level=0, return.level=0) {
 
@@ -142,35 +142,35 @@ GADAG2_Run <- function(X, lambda=0.1, threshold=0.1,
   #############################################################
 
   ############## Initialisation step ###############
-  if (is.null(GADAG2.control$n.gen)){
+  if (is.null(GADAG.control$n.gen)){
     n.gen <- 250
   } else {
-    n.gen <- GADAG2.control$n.gen
+    n.gen <- GADAG.control$n.gen
   }
-  if (is.null(GADAG2.control$max.eval)){
+  if (is.null(GADAG.control$max.eval)){
     max.eval <- 1e4
   } else {
-    max.eval <- GADAG2.control$max.eval
+    max.eval <- GADAG.control$max.eval
   }
-  if (is.null(GADAG2.control$tol.Shannon)){
+  if (is.null(GADAG.control$tol.Shannon)){
     tol.Shannon <- 1e-6
   } else {
-    tol.Shannon <- GADAG2.control$tol.Shannon
+    tol.Shannon <- GADAG.control$tol.Shannon
   }
-  if (is.null(GADAG2.control$pop.size)){
+  if (is.null(GADAG.control$pop.size)){
     pop.size <- 10
   } else {
-    pop.size <- GADAG2.control$pop.size
+    pop.size <- GADAG.control$pop.size
   }
-  if (is.null(GADAG2.control$p.xo)){
+  if (is.null(GADAG.control$p.xo)){
     p.xo <- 0.25
   } else {
-    p.xo <- GADAG2.control$p.xo
+    p.xo <- GADAG.control$p.xo
   }
-  if (is.null(GADAG2.control$p.mut)){
+  if (is.null(GADAG.control$p.mut)){
     p.mut <- 0.05
   } else {
-    p.mut <- GADAG2.control$p.mut
+    p.mut <- GADAG.control$p.mut
   }
   if (is.null(grad.control$tol.obj.inner)){
     tol.obj.inner <- 1e-6

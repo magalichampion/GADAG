@@ -1,6 +1,6 @@
-##' @title Analyze GADAG2 results.
-##' @description Function to Analyze GADAG2 results.
-##' @param Results Outputs from \code{GADAG2_Run()} function.
+##' @title Analyze GADAG results.
+##' @description Function to Analyze GADAG results.
+##' @param Results Outputs from \code{GADAG_Run()} function.
 ##' @param G (optional) Adjacency matrix corresponding to the true DAG (pxp matrix).
 ##' @param X (optional) Design matrix with samples (n) in rows and variables (p) in columns.
 ##' @param plot.control A list containing parameters to control the produced graph outputs (\code{return.level} has to be turned to 1 in the main code beforehand):
@@ -10,9 +10,9 @@
 ##' \item \code{plot.png} If 1, saves the figures in .png.
 ##' }
 ##' @param Nodes (optional) If plot.evol is turned on, specifies the evolution of which nodes you want to highlight.
-##' @rawNamespace export(GADAG2_Analyze)
+##' @rawNamespace export(GADAG_Analyze)
 ##' @return A vector containing the scores of precision, recall, number of false positives (FP), false negatives (FN), true positives (TP), true negatives (TN) and mean squared error (only if \code{G} and \code{X} are provided).
-##' @author \packageAuthor{GADAG2}
+##' @author \packageAuthor{GADAG}
 ##' @details This function returns as primary outputs the performances of the estimation graph procedure
 ##' in terms of TP, FP, FN, TN, precision and recall, obtained by comparing the estimated
 ##' graph with the true one (if known and provided).
@@ -20,7 +20,7 @@
 ##' and the true DAG (if known and provided) and the evolution of the algorithm. This generates three figures:
 ##' the first one represents the evolution of the fitness value (best fitness in red, averaged population fitness and quantiles across the iterations),
 ##' the second one, the evolution of the Shannon entropy of each node across the iterations, the third one, the best node ordering (permutation that minimizes the fitness) across the iterations.
-##' @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_CV}}, \code{\link{GADAG2_Run}}, \code{\link{GADAG2_Analyze}}.
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_CV}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
 ##'
 ##' @examples
 ##'  #############################################################
@@ -33,37 +33,37 @@
 ##'  # - toy_data$G is the 10x10 adjacency matrix (ground trough)
 ##'
 ##'  ########################################################
-##'  # Evaluating GADAG2 Results
+##'  # Evaluating GADAG Results
 ##'  ########################################################
 ##'  # simple run, where you only get the precision, recall, number
 ##'  # of false positives, true positives, false negatives, true negatives
 ##'  # and mean squared error of the estimated graph
 ##'
-##'  # run GADAG2 with the predefined parameters
-##'  GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1)
+##'  # run GADAG with the predefined parameters
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1)
 ##'
 ##'  # analyze the results
-##'  GADAG2_analysis <- GADAG2_Analyze(GADAG2_results, G=toy_data$G, X=toy_data$X)
-##'  print(GADAG2_analysis) # here are the results
+##'  GADAG_analysis <- GADAG_Analyze(GADAG_results, G=toy_data$G, X=toy_data$X)
+##'  print(GADAG_analysis) # here are the results
 ##'
 ##'  # more complex run, where you want to have some details about the procedure
 ##'  \dontrun{
-##'  # run GADAG2 with return.level set to 1 beforehand
-##'  GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=0.1,return.level=1)
+##'  # run GADAG with return.level set to 1 beforehand
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=0.1,return.level=1)
 ##'
 ##'  # print the evolution of the algorithm and highlight node 1
 ##'  plot.evol <- 1
-##'  GADAG2_analysis <- GADAG2_Analyze(GADAG2_results, G=toy_data$G, X=toy_data$X,
+##'  GADAG_analysis <- GADAG_Analyze(GADAG_results, G=toy_data$G, X=toy_data$X,
 ##'           plot.control = list(plot.evol=1), Nodes=c(1))
 ##'
 ##'  # in addition, print the estimated and the true graph
 ##'  plot.graph <- 1
-##'  GADAG2_analysis <- GADAG2_Analyze(GADAG2_results, G=toy_data$G, X=toy_data$X,
+##'  GADAG_analysis <- GADAG_Analyze(GADAG_results, G=toy_data$G, X=toy_data$X,
 ##'           plot.control = list(plot.evol=plot.evol, plot.graph= plot.graph))
 ##'
 ##'  # now save the results in .png, but only for the graphs
 ##'  plot.png <- 1
-##'  GADAG2_analysis <- GADAG2_Analyze(GADAG2_results, G=toy_data$G, X=toy_data$X,
+##'  GADAG_analysis <- GADAG_Analyze(GADAG_results, G=toy_data$G, X=toy_data$X,
 ##'           plot.control = list(plot.graph= plot.graph, plot.png = plot.png))
 ##'
 ##'  # in case you don't know the true DAG, you can't really know how good the
@@ -71,15 +71,15 @@
 ##'  # still plot the estimated graph and see the evolution of the algorithm
 ##'  plot.graph <- plot.evol <- 1
 ##'  plot.png <- 0
-##'  GADAG2_analysis <- GADAG2_Analyze(GADAG2_results, X=toy_data$X,
+##'  GADAG_analysis <- GADAG_Analyze(GADAG_results, X=toy_data$X,
 ##'           plot.control = list(plot.graph= plot.graph, plot.evol = plot.evol))
 ##'  }
 
-GADAG2_Analyze <- function(Results,G=NULL,X=NULL,plot.control=list(plot.graph=0,plot.evol=0,plot.png=0),Nodes=NULL){
+GADAG_Analyze <- function(Results,G=NULL,X=NULL,plot.control=list(plot.graph=0,plot.evol=0,plot.png=0),Nodes=NULL){
 
   #############################################################
   # INPUTS:
-  # Results: a list generated by GADAG2_Run, containing:
+  # Results: a list generated by GADAG_Run, containing:
   #      f.best: best fitness value
   #      P.best: best individual (node order)
   #      T.best: corresponding best triangular matrix (edges values)

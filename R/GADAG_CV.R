@@ -1,13 +1,13 @@
 #########################################
 ### Tuning the parameter of penalization by CV
-##' @title Cross-validation for GADAG2
-##' @description Function to run k-fold cross-validation for GADAG2 to optimally tune the parameter of penalization.
-##' @details The function runs \code{GADAG2} \code{n.folds} times for each of the tested lambdas to compute the best solution associated to each omitted fold. The error is accumulated and the averaged error over the folds is computed. The best lambda \code{lambda.min} corresponds to the one that minimizes the error.
+##' @title Cross-validation for GADAG
+##' @description Function to run k-fold cross-validation for GADAG to optimally tune the parameter of penalization.
+##' @details The function runs \code{GADAG} \code{n.folds} times for each of the tested lambdas to compute the best solution associated to each omitted fold. The error is accumulated and the averaged error over the folds is computed. The best lambda \code{lambda.min} corresponds to the one that minimizes the error.
 ##' @param X Design matrix, with samples (n) in rows and variables (p) in columns.
-##' @param Lambdas Optional user-supplied lambda sequence. Default is null and GADAG2 chooses its own sequence.
+##' @param Lambdas Optional user-supplied lambda sequence. Default is null and GADAG chooses its own sequence.
 ##' @param n.folds Number of folds for cross-validation (10 by default). Can be as large as the sample size (leave-one-out cross validation) but not recommended for large data sets.
 ##' @param threshold Thresholding value for the estimated edges.
-##' @param GADAG2.control A list containing parameters for controlling GADAG2 (termination conditions and inherent parameters of the Genetic Algortihm).
+##' @param GADAG.control A list containing parameters for controlling GADAG (termination conditions and inherent parameters of the Genetic Algortihm).
 ##' Some parameters (n.gen, max.eval and pop.size) are particularly critical for reducing the computational time.
 ##' \itemize{
 ##' \item{\code{n.gen}}{ maximal number of population generations (>0),}
@@ -17,14 +17,14 @@
 ##' \item{\code{p.xo}}{ crossover probability of the genetic algorithm (between 0 and 1),}
 ##' \item{\code{p.mut}}{ mutation probability of the genetic algorithm (between 0 and 1).}
 ##' }
-##' @rawNamespace export(GADAG2_CV)
+##' @rawNamespace export(GADAG_CV)
 ##' @rawNamespace import(igraph)
 ##' @rawNamespace import(MASS)
 ##' @rawNamespace import(Rcpp)
 ##' @rawNamespace import(parallel)
 ##' @rawNamespace import(cvTools)
 ##' @rawNamespace importFrom(Rcpp, evalCpp)
-##' @rawNamespace useDynLib(GADAG2)
+##' @rawNamespace useDynLib(GADAG)
 ##' @param grad.control A list containing the parameters for controlling the inner optimization, i.e. the gradient descent.
 ##' \itemize{
 ##' \item{\code{tol.obj.inner}}{ tolerance (>0),}
@@ -40,8 +40,8 @@
 ##' \item{\code{Lambdas}}{ The values of \code{lambda} used in the fits.}
 ##' \item{\code{error.CV}}{ The averaged cross validation error.}
 ##' }
-##' @seealso \code{\link{GADAG2}}, \code{\link{GADAG2_Run}}, \code{\link{GADAG2_Analyze}}.
-##' @author \packageAuthor{GADAG2}
+##' @seealso \code{\link{GADAG}}, \code{\link{GADAG_Run}}, \code{\link{GADAG_Analyze}}.
+##' @author \packageAuthor{GADAG}
 ##'
 ##'@references
 ##' M. Champion, V. Picheny, M. Vignes, Inferring large graphs using l-1 penalized likelihood,
@@ -60,24 +60,24 @@
 ##'  #############################################################
 ##'  # Tuning the parameter of penalization
 ##'  #############################################################
-##'  # Simple run, whithout specifying GADAG2 parameters
+##'  # Simple run, whithout specifying GADAG parameters
 ##'  \dontrun{
-##'  GADAG2_CV_results <- GADAG2_CV(X=toy_data$X)
-##'  print(GADAG2_CV_results$lambda.1se) # best lambda
+##'  GADAG_CV_results <- GADAG_CV(X=toy_data$X)
+##'  print(GADAG_CV_results$lambda.1se) # best lambda
 ##'  }
 ##'  # If desired, additional plot for the averaged cross validation
 ##'  # error
 ##'  \dontrun{
-##'  GADAG2_CV_results <- GADAG2_CV(X=toy_data$X,plot.CV=1)
+##'  GADAG_CV_results <- GADAG_CV(X=toy_data$X,plot.CV=1)
 ##'  }
-##'  # Given the best lambda, re-run GADAG2
+##'  # Given the best lambda, re-run GADAG
 ##'  \dontrun{
-##'  GADAG2_results <- GADAG2_Run(X=toy_data$X, lambda=GADAG2_CV_results$lambda.1se)
-##'  print(GADAG2_results$G.best) # optimal adjacency matrix graph
+##'  GADAG_results <- GADAG_Run(X=toy_data$X, lambda=GADAG_CV_results$lambda.1se)
+##'  print(GADAG_results$G.best) # optimal adjacency matrix graph
 ##'  }
 
-GADAG2_CV <- function(X, Lambdas = NULL, n.folds = 10, threshold = 0.1,
-                      GADAG2.control = list(n.gen=250, tol.Shannon=1e-6, max.eval=1e7,pop.size=5*ncol(X), p.xo=.25, p.mut=.05),
+GADAG_CV <- function(X, Lambdas = NULL, n.folds = 10, threshold = 0.1,
+                      GADAG.control = list(n.gen=250, tol.Shannon=1e-6, max.eval=1e7,pop.size=5*ncol(X), p.xo=.25, p.mut=.05),
                       grad.control = list(tol.obj.inner=1e-6, max.ite.inner=50),
                       ncores=1, plot.CV=0) {
 
@@ -107,35 +107,35 @@ GADAG2_CV <- function(X, Lambdas = NULL, n.folds = 10, threshold = 0.1,
   } else {
     lambda.log <- log(Lambdas)
   }
-  if (is.null(GADAG2.control$n.gen)){
+  if (is.null(GADAG.control$n.gen)){
     n.gen <- 250
   } else {
-    n.gen <- GADAG2.control$n.gen
+    n.gen <- GADAG.control$n.gen
   }
-  if (is.null(GADAG2.control$max.eval)){
+  if (is.null(GADAG.control$max.eval)){
     max.eval <- 1e4
   } else {
-    max.eval <- GADAG2.control$max.eval
+    max.eval <- GADAG.control$max.eval
   }
-  if (is.null(GADAG2.control$tol.Shannon)){
+  if (is.null(GADAG.control$tol.Shannon)){
     tol.Shannon <- 1e-6
   } else {
-    tol.Shannon <- GADAG2.control$tol.Shannon
+    tol.Shannon <- GADAG.control$tol.Shannon
   }
-  if (is.null(GADAG2.control$pop.size)){
+  if (is.null(GADAG.control$pop.size)){
     pop.size <- 10
   } else {
-    pop.size <- GADAG2.control$pop.size
+    pop.size <- GADAG.control$pop.size
   }
-  if (is.null(GADAG2.control$p.xo)){
+  if (is.null(GADAG.control$p.xo)){
     p.xo <- 0.25
   } else {
-    p.xo <- GADAG2.control$p.xo
+    p.xo <- GADAG.control$p.xo
   }
-  if (is.null(GADAG2.control$p.mut)){
+  if (is.null(GADAG.control$p.mut)){
     p.mut <- 0.05
   } else {
-    p.mut <- GADAG2.control$p.mut
+    p.mut <- GADAG.control$p.mut
   }
   if (is.null(grad.control$tol.obj.inner)){
     tol.obj.inner <- 1e-6
@@ -147,7 +147,7 @@ GADAG2_CV <- function(X, Lambdas = NULL, n.folds = 10, threshold = 0.1,
   } else {
     max.ite.inner <- grad.control$max.ite.inner
   }
-  GADAG2.control <- list(n.gen=n.gen,max.eval=max.eval,tol.Shannon,pop.size=pop.size,p.xo=p.xo,p.mut=p.mut)
+  GADAG.control <- list(n.gen=n.gen,max.eval=max.eval,tol.Shannon,pop.size=pop.size,p.xo=p.xo,p.mut=p.mut)
   grad.control <- list(tol.obj.inner=tol.obj.inner,max.ite.inner=max.ite.inner)
 
   ##### Define the groups for cross validation #####
@@ -163,7 +163,7 @@ GADAG2_CV <- function(X, Lambdas = NULL, n.folds = 10, threshold = 0.1,
   }
   Groups <- Groups$which
 
-  ##### Run GADAG2 for each fold #####
+  ##### Run GADAG for each fold #####
   Fold.CV <- function(i,l){
     Test <- which(Groups==i)
     Xtest <- X[Test,]
@@ -172,10 +172,10 @@ GADAG2_CV <- function(X, Lambdas = NULL, n.folds = 10, threshold = 0.1,
     Xtrain <- X[Train,] - matrix(1,length(Train),1) %*% colMeans(X[Train,])
     Xtrain = Xtrain / sqrt( (1/length(Train)) * matrix(1,length(Train),1) %*% colSums(Xtrain^2))
 
-    GADAG2_results <- GADAG2_Run(X = Xtrain, lambda = l, threshold = threshold, GADAG2.control = GADAG2.control, grad.control = grad.control, ncores = ncores)
-    error.CV <- (1/(length(Test)*p)) * sum((Xtest-Xtest%*%GADAG2_results$G.best)^2)
+    GADAG_results <- GADAG_Run(X = Xtrain, lambda = l, threshold = threshold, GADAG.control = GADAG.control, grad.control = grad.control, ncores = ncores)
+    error.CV <- (1/(length(Test)*p)) * sum((Xtest-Xtest%*%GADAG_results$G.best)^2)
 
-    nnzero <- length(which(abs(GADAG2_results$G.best)>0))
+    nnzero <- length(which(abs(GADAG_results$G.best)>0))
 
     return(c(error=error.CV,nnzero=nnzero))
   }
